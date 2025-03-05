@@ -1,0 +1,2730 @@
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn&amp;display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Finnish Vocabulary Challenge</title>
+  <style>
+  
+  .word {
+  font-family: 'Vazirmatn', sans-serif !important;
+}
+
+.reverse-mode-options button {
+  font-family: 'Vazirmatn', sans-serif !important;
+}
+
+/* Word number Selection Styles */
+
+/* Inactive state – gray background */
+#selectAllWordsBtn:not(.selected) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Active state – blue background */
+#selectAllWordsBtn.selected {
+  background-color: #1466B8;
+}
+
+/* Mode Selection Page Styles */
+.mode-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
+  background-color: #222;
+  position: relative;
+}
+
+.mode-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 40px;
+  color: #fff;
+}
+
+.glassy-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: #fff;
+  padding: 15px 30px;
+  margin: 10px;
+  font-size: 1.2rem;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  width: 80%;
+  max-width: 300px;
+  transition: background 0.3s, border 0.3s;
+}
+
+.glassy-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.developer-credit {
+  font-size: 0.8rem;
+  color: #aaa;
+  position: absolute;
+  bottom: 10px;
+}
+/* ---- RESET & BODY ---- */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #222;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+/* ---- Remove default button focus outlines on all buttons ---- */
+button:focus,
+button:focus-visible,
+button:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+button::-moz-focus-inner {
+  border: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ---- CHAPTER SELECTION SCREEN (MENU) ---- */
+#chapterSelection {
+  text-align: center;
+  margin-top: 30px;
+}
+#chapterSelection h1, #chapterSelection h2 {
+  margin-bottom: 20px;
+}
+#chapterSelection button {
+  background-color: #1466B8;
+  border: none;
+  color: white;
+  padding: 15px 15px;
+  margin: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.3s;
+  width: 170px;
+}
+#chapterSelection button:hover {
+  background-color: #1a75cc;
+}
+
+/* ---- GAME UI CONTAINER (hidden by default) ---- */
+#gameUI.hidden {
+  display: none;
+}
+
+/* ---- TOP BAR ---- */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
+  background-color: #333;
+  gap: 20px;
+}
+
+.chapter-title {
+  font-size: 1rem;
+  color: #fff;
+  min-width: 120px; /* Prevent collapsing */
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  flex-shrink: 0;
+}
+
+#timer {
+  font-size: 1rem;
+  color: #fff;
+  order: 1;
+}
+
+.score {
+  font-size: 1rem;
+  color: #fff;
+  order: 2;
+}
+
+.voice-toggle-container {
+  order: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Voice toggle styles */
+.voice-toggle {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  border-radius: 14px;
+  background-color: #444;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.voice-toggle.active {
+  background-color: #1466B8;
+}
+
+.voice-toggle-knob {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.voice-toggle.active .voice-toggle-knob {
+  transform: translateX(20px);
+}
+
+.voice-toggle-label {
+  color: #fff;
+  font-size: 0.85rem;
+  user-select: none;
+}
+
+@media (max-width: 768px) { /* Mobile breakpoint */
+  .top-bar {
+    padding: 10px 15px; /* Add padding to both sides */
+  }
+  
+  .header-controls {
+    gap: 15px; /* Reduce spacing between elements */
+  }
+
+  .voice-toggle-container {
+    margin-right: 15px; /* Specific margin for toggle */
+  }
+  
+  /* Adjust toggle size for mobile */
+  .voice-toggle {
+    width: 42px;
+    height: 24px;
+  }
+  
+  .voice-toggle-knob {
+    width: 18px;
+    height: 18px;
+    top: 3px;
+    left: 3px;
+  }
+  
+  .voice-toggle.active .voice-toggle-knob {
+    transform: translateX(18px);
+  }
+}
+.speak-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+/* ---- PROGRESS BAR ---- */
+#progressWrapper {
+  width: 80%;
+  max-width: 600px;
+  margin: 10px auto 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#progressBarContainer {
+  flex: 1;
+  background-color: #444;
+  border-radius: 5px;
+  height: 10px;
+  overflow: hidden;
+  position: relative;
+}
+#progressBar {
+  background-color: #1466B8;
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s;
+}
+#progressText {
+  font-size: 0.9rem;
+}
+
+/* ---- MAIN CONTENT AREA ---- */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+#interactiveContainer {
+  width: 100%;
+}
+.word {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 80%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+.options-container button {
+  font-family: 'Vazirmatn', sans-serif;
+  background-color: #444;
+  border: none;
+  color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s;
+  width: 100%;
+  text-align: center;
+}
+.options-container button:hover {
+  background-color: #555;
+}
+#feedback {
+  min-height: 25px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 1rem;
+  text-align: center;
+}
+#resetButton {
+  margin-top: 30px;
+  background-color: #1466B8;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.3s;
+}
+#resetButton:hover {
+  background-color: #1a75cc;
+}
+
+/* ---- NAVIGATION BUTTONS ---- */
+#navButtons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 80%;
+  max-width: 400px;
+}
+#navButtons button {
+  background-color: #1466B8;
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  width: 50%;
+  transition: background-color 0.3s;
+}
+#navButtons button:hover {
+  background-color: #1a75cc;
+}
+
+/* ---- BOTTOM NAV (Back to Menu) ---- */
+#bottomNav {
+  text-align: center;
+  margin-top: 20px;
+    width: 80%;
+  max-width: 400px;
+}
+#backToMenuBtn {
+  background-color: #444;
+  border: none;
+  color: #fff;
+  padding: 12px 30px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+      width: 100%;
+  transition: background-color 0.3s;
+}
+#backToMenuBtn:hover {
+  background-color: #555;
+}
+
+/* ---- END SCREEN ---- */
+#endScreen {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+#mistakesList {
+  margin-top: 20px;
+  font-size: 1rem;
+  max-width: 400px;
+  margin: 20px auto 0;
+  text-align: center;
+  font-family: 'Vazirmatn', sans-serif;
+}
+#reviewMissedBtn,
+#toggleMissedBtn {
+  background-color: #1466B8;
+  color: #fff;
+  border: none;
+  padding: 15px 40px;
+  margin: 10px auto 0;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.3s;
+  display: block;
+}
+#reviewMissedBtn:hover,
+#toggleMissedBtn:hover {
+  background-color: #1a75cc;
+}
+#backToChaptersEnd {
+  background-color: #1466B8;
+  border: none;
+  color: #fff;
+  padding: 15px 40px;
+  margin-top: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.3s;
+}
+#backToChaptersEnd:hover {
+  background-color: #1a75cc;
+}
+
+/* ---- RANDOM WORD CHAPTER SELECTION ---- */
+#randomChapterSelection {
+  margin: 20px 0;
+  text-align: center;
+}
+#randomChapterSelection h3 {
+  margin-bottom: 10px;
+}
+.random-chapter-btn {
+  background-color: #444;
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 5px;
+  width: 40%;
+  transition: background-color 0.3s;
+}
+.random-chapter-btn:hover {
+  background-color: #555;
+}
+.random-chapter-btn.selected {
+  background-color: #1466B8;
+}
+  </style>
+</head>
+<body>
+<!-- Mode Selection Page -->
+<div id="modeSelection" class="mode-selection">
+  <h3>Finnish Vocabulary Challenge</h3>
+  <h1 class="mode-title" style="text-align: center; padding: 0px 15px 0px 15px;">Choose Your Mode</h1>
+  <button class="glassy-button" onclick="selectMode('category')">Choose Category</button>
+  <button class="glassy-button" onclick="selectMode('randomWord')">Random Words</button>
+  <button class="glassy-button" onclick="selectMode('reverse')">Reverse Mode</button>
+  <button class="glassy-button" onclick="selectMode('wordList')">Word List</button>
+  <p class="developer-credit">Developed by Ashkan HM</p>
+</div>
+  <!-- CHAPTER SELECTION SCREEN (MENU) -->
+  <div id="chapterSelection" class="hidden">
+    <h1>Finnish Vocabulary Challenge</h1>
+    <h2>Select a Chapter</h2>
+    <div id="wordCountControl" style="width: 80%; max-width: 400px; margin: 0 auto 20px auto;">
+  <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 10px; text-align: center;">
+    Choose how many words you want to practice
+  </p>
+  <input 
+    type="range" 
+    id="chapterWordSlider" 
+    min="0" 
+    max="150" 
+    value="150" 
+    style="width: 100%; margin: 20px 0;"
+  >
+  <div style="text-align: center; margin-bottom: 20px;">
+    <span id="chapterWordNumber" style="color: #fff;">All words</span>
+  </div>
+<button id="selectAllWordsBtn" class="glassy-button" style="border: 1px solid rgba(255, 255, 255, 0.2) !important; width: 100% !important;">
+  Select All Words
+</button>
+
+</div>
+    <button onclick="selectChapter('Chapter 1')">Chapter 1</button>
+    <button onclick="selectChapter('Chapter 2')">Chapter 2</button>
+    <button onclick="selectChapter('Chapter 3')">Chapter 3</button>
+    <button onclick="selectChapter('Chapter 4')">Chapter 4</button>
+    <button onclick="selectChapter('Chapter 5')">Chapter 5</button>
+    <button onclick="selectChapter('Chapter 6')">Chapter 6</button>
+    <button onclick="selectChapter('Chapter 7')">Chapter 7</button>
+    <button onclick="selectChapter('Chapter 8')">Chapter 8</button>
+    <button onclick="selectChapter('Colors')">Colors</button>
+    <button onclick="selectChapter('Verbs')">Verbs</button>
+    <button onclick="selectChapter('Foods')">Foods</button>
+    <button onclick="selectChapter('Time')">Time</button>
+    <button id="backToModeBtn" class="glassy-button" style="background: rgba(255, 255, 255, 0.1) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; color: #fff !important; width: 100% !important;" onclick="backToModeSelection()">
+      Back to Mode Selection
+    </button>
+  </div>
+  
+<!-- Word List Page -->
+<div id="wordListPage" class="hidden" style="padding: 20px; background-color: #222; min-height: 100vh;">
+  <!-- Header Section -->
+  <div id="wordListHeader" style="margin-top: 40px; text-align: center;">
+    <h1 id="wordListTitle" style="color: #fff; margin-bottom: 10px;">Word List</h1>
+    <p id="wordListTagline" style="color: #ccc; font-size: 0.9rem; margin-bottom: 20px;">
+      Choose a category below to see all the words, their translations, and example sentences.
+    </p>
+  </div>
+  
+  <!-- Category Buttons Container (for category view) -->
+  <div id="wordListCategories" style="margin-bottom: 15px; text-align: center;"></div>
+  
+  <!-- Back to Mode Selection Button for Category View -->
+  <button id="wlBackToModeBtn" class="glassy-button" 
+          style="width: 100%; max-width: 300px; display: block; margin: 20px auto 0;">
+    Back to Mode Selection
+  </button>
+  
+  <!-- Word Table Container (for word list view) -->
+  <div id="wordTableContainer" class="hidden">
+    <!-- Top Back to Categories Button -->
+    <button id="backToCategoriesBtnTop" class="glassy-button" 
+            style="width: 100%; max-width: 300px; display: block; margin: 20px auto 0;">
+      Back to Categories
+    </button>
+    <table id="wordTable" style="width: 100%; border-collapse: collapse; color: #fff;"></table>
+    <!-- Bottom Back to Categories Button -->
+    <button id="backToCategoriesBtnBottom" class="glassy-button" 
+            style="width: 100%; max-width: 300px; display: block; margin: 20px auto 0;">
+      Back to Categories
+    </button>
+  </div>
+</div>
+
+<!-- Random Word Setup Page -->
+<div id="randomWordSetupPage" class="hidden" style="padding: 20px; background-color: #222; min-height: 100vh; text-align: center;">
+  <h1 style="color: #fff; margin-top: 40px;">Random Word Challenge</h1>
+  <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 20px;">
+    Choose the number of words for your challenge (0 to 100).
+  </p>
+  <input type="range" id="randomWordSlider" min="0" max="100" value="10" style="width: 80%; margin: 20px 0;">
+  <div>
+    <span id="randomWordNumber" style="color: #fff; display: block; margin-bottom: 20px;">10 words</span>
+  </div>
+  <div id="randomChapterSelection">
+    <h3 style="color: #fff;">Select Chapter</h3>
+    <div id="randomChapterButtons"></div>
+  </div>
+  <button id="randomWordStartBtn" style="background-color: #1466B8; color: #fff; padding: 10px 130px; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1rem; margin-bottom: 20px;">
+    Start
+  </button>
+  <button id="randomWordBackBtn" class="glassy-button" style="width: 100%; max-width: 300px; display: block; margin: 20px auto 0;">
+    Back to Mode Selection
+  </button>
+</div>
+
+<!-- ALL IN-GAME UI IS WRAPPED HERE, HIDDEN BY DEFAULT -->
+<div id="gameUI" class="hidden">
+  <!-- TOP BAR -->
+<div class="top-bar" id="topBar">
+  <div class="chapter-title" id="chapterTitle"></div>
+  
+  <div class="header-controls">
+    <div id="timer">00:00</div>
+    <div class="score">Score: <span id="score">0</span></div>
+    <div class="voice-toggle-container">
+      <span class="voice-toggle-label">Voice</span>
+      <div id="voiceToggle" class="voice-toggle">
+        <div class="voice-toggle-knob"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- PROGRESS BAR -->
+  <div id="progressWrapper">
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+    <div id="progressText">0/0</div>
+  </div>
+
+  <!-- MAIN CONTENT AREA -->
+  <div class="main-content" id="gameContent">
+    <div id="interactiveContainer">
+      <div class="word" id="question"></div>
+      <div class="options-container" id="options"></div>
+      <div id="feedback"></div>
+      <button id="resetButton" class="hidden" onclick="resetGame()">Play Again</button>
+    </div>
+    <div id="navButtons">
+      <button id="prevBtn">Previous</button>
+      <button id="nextBtn">Next</button>
+    </div>
+    <!-- BACK TO MENU BUTTON (still part of the in-game UI) -->
+    <div id="bottomNav" class="hidden">
+      <button id="backToMenuBtn">Back to Menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- END SCREEN -->
+<div id="endScreen" class="hidden">
+  <h2>Chapter Completed!</h2>
+  <p>Your final score is: <span id="finalScore"></span></p>
+  <p>Your total time was: <span id="finalTime"></span></p>
+  <button id="reviewMissedBtn" class="hidden" onclick="reviewMissedWords()">Review the Missed Words</button>
+  <button id="toggleMissedBtn" class="hidden" onclick="toggleMissedWords()">Show the Words I Missed</button>
+  <div id="mistakesList"></div>
+  <button id="backToChaptersEnd">Back to Chapters</button>
+</div>
+
+<script>
+  /***************************************
+   * 1) CHAPTER DATA
+   ***************************************/
+  const chapters = {
+    "Chapter 1": [
+    { finnish: "allekirjoitus", english: "Signature / امضا", example: "Tässä on minun allekirjoitukseni." },
+    { finnish: "anteeksi", english: "Sorry / ببخشید", example: "Anteeksi, en ymmärrä." },
+    { finnish: "asua", english: "To Live / زندگی کردن", example: "Minä asun Suomessa." },
+    { finnish: "ei", english: "No / نه", example: "Ei, kiitos." },
+    { finnish: "ei se mitään", english: "No Worries / اشکالی ندارد", example: "Ei se mitään, kaikki on hyvin." },
+    { finnish: "englanti", english: "English / انگلیسی", example: "Minä puhun englantia." },
+    { finnish: "entä", english: "What About / چطور", example: "Menen kotiin, entä sinä?" },
+    { finnish: "miten", english: "How / چگونه", example: "Miten voit tänään?" },
+    { finnish: "naapuri", english: "Neighbor / همسایه", example: "Hän on minun naapuri." },
+    { finnish: "naimaton", english: "Single / مجرد", example: "Olen vielä naimaton." },
+    { finnish: "nainen", english: "Woman / زن", example: "Hän on nainen." },
+    { finnish: "nimi", english: "Name / نام", example: "Mikä on sinun nimi?" },
+    { finnish: "numero", english: "Number / شماره", example: "Tämä numero on tärkeä." },
+    { finnish: "nähdä", english: "To See / دیدن", example: "Haluan nähdä sinut." },
+    { finnish: "ole hyvä", english: "You're Welcome / خواهش می‌کنم", example: "Ole hyvä ja istu." },
+    { finnish: "olla", english: "To Be / بودن", example: "Minä haluan olla kotona." },
+    { finnish: "ongelma", english: "Problem / مشکل", example: "Onko tämä ongelma?" },
+    { finnish: "että", english: "That / که", example: "Tiedän, että olet väsynyt." },
+    { finnish: "etunimi", english: "First Name / نام کوچک", example: "Minun etunimi on Anna." },
+    { finnish: "hauska", english: "Nice / خوشایند", example: "Tämä leikki on hauska." },
+    { finnish: "he", english: "They / آنها", example: "He opiskelevat yhdessä." },
+    { finnish: "hei", english: "Hello / سلام", example: "Hei, miten menee?" },
+    { finnish: "henkilötiedot", english: "Personal Information", example: "Kirjoita henkilötiedot lomakkeelle." },
+    { finnish: "henkilötunnus", english: "Personal Identity Number", example: "Henkilötunnus on salainen." },
+    { finnish: "häiritä", english: "To Bother / مزاحم شدن", example: "En halua häiritä sinua." },
+    { finnish: "hän", english: "He/She / او", example: "Hän asuu Turussa." },
+    { finnish: "ikä", english: "Age / سن", example: "Mikä on sinun ikäsi?" },
+    { finnish: "joku", english: "Someone / کسی", example: "Joku koputti oveen." },
+    { finnish: "Kanada", english: "Canada / کانادا", example: "Kanada on iso maa." },
+    { finnish: "kansalaisuus", english: "Nationality / ملیت", example: "Mikä on sinun kansalaisuus?" },
+    { finnish: "kaupunki", english: "City / شهر", example: "Tämä kaupunki on kaunis." },
+    { finnish: "kieli", english: "Language / زبان", example: "Suomi on minun kieli." },
+    { finnish: "kiitos", english: "Thank You / متشکرم", example: "Kiitos avusta." },
+    { finnish: "kirjoittaa", english: "To Write / نوشتن", example: "Haluan kirjoittaa kirjeen." },
+    { finnish: "koti", english: "Home / خانه", example: "Koti on rauhallinen." },
+    { finnish: "kuinka", english: "How / چگونه", example: "Kuinka voit?" },
+    { finnish: "kuka", english: "Who / چه کسی", example: "Kuka soitti?" },
+    { finnish: "kysymys", english: "Question / سؤال", example: "Minulla on kysymys." },
+    { finnish: "maa", english: "Country / کشور", example: "Suomi on minun maa." },
+    { finnish: "me", english: "We / ما", example: "Me syömme yhdessä." },
+    { finnish: "mies", english: "Man / مرد", example: "Hän on mies." },
+    { finnish: "mikä", english: "What / چه", example: "Mikä tämä on?" },
+    { finnish: "minkä ikäinen", english: "How Old / چند ساله", example: "Minkä ikäinen olet?" },
+    { finnish: "minkä maalainen", english: "Which Nationality / اهل کدام کشور", example: "Minkä maalainen sinä olet?" },
+    { finnish: "minä", english: "I / من", example: "Minä olen opiskelija." },
+    { finnish: "missä", english: "Where / کجا", example: "Missä asut?" },
+    { finnish: "opettaja", english: "Teacher / معلم", example: "Opettaja on ystävällinen." },
+    { finnish: "opiskella", english: "To Study / تحصیل کردن", example: "Haluan opiskella suomea." },
+    { finnish: "osoite", english: "Address / نشانی", example: "Mikä on sinun osoite?" },
+    { finnish: "postinumero", english: "Postal Code / کد پستی", example: "Tiedätkö sinun postinumeron?" },
+    { finnish: "postitoimipaikka", english: "Post Office / اداره پست", example: "Missä on lähin postitoimipaikka?" },
+    { finnish: "puhelin", english: "Phone / تلفن", example: "Minun puhelin on rikki." },
+    { finnish: "puhelinnumero", english: "Phone Number / شماره تلفن", example: "Mikä on sinun puhelinnumero?" },
+    { finnish: "puhua", english: "To Speak / صحبت کردن", example: "Puhun suomea vähän." },
+    { finnish: "raha", english: "Money / پول", example: "Tarvitsen rahaa." },
+    { finnish: "Ranska", english: "France / فرانسه", example: "Ranska on Euroopassa." },
+    { finnish: "samoin", english: "Likewise / همچنین", example: "Samoin, kiitos!" },
+    { finnish: "sanoa", english: "To Say / گفتن", example: "Voit sanoa sen uudelleen?" },
+    { finnish: "se", english: "It / آن", example: "Se on hyvä idea." },
+    { finnish: "sinä", english: "You / تو", example: "Sinä olet mukava." },
+    { finnish: "siviilisääty", english: "Marital Status / وضعیت تأهل", example: "Mikä on sinun siviilisääty?" },
+    { finnish: "sukunimi", english: "Last Name / نام خانوادگی", example: "Mikä on sinun sukunimi?" },
+    { finnish: "sukupuoli", english: "Gender / جنسیت", example: "Mikä on sinun sukupuoli?" },
+    { finnish: "suomalainen", english: "Finnish / فنلاندی", example: "Olen suomalainen." },
+    { finnish: "suomi", english: "Finnish Language / زبان فنلاندی", example: "Opiskelen suomi nyt." },
+    { finnish: "Suomi", english: "Finland / فنلاند", example: "Suomi on minun kotimaa." },
+    { finnish: "syntymäaika", english: "Date Of Birth / تاریخ تولد", example: "Mikä on sinun syntymäaika?" },
+    { finnish: "sähköposti", english: "Email / ایمیل", example: "Lähetä minulle sähköposti." },
+    { finnish: "sähköpostiosoite", english: "Email Address / نشانی ایمیل", example: "Mikä on sinun sähköpostiosoite?" },
+    { finnish: "talo", english: "House / خانه", example: "Talo on punainen." },
+    { finnish: "tavata", english: "To Meet / ملاقات کردن", example: "Voimmeko tavata huomenna?" },
+    { finnish: "te", english: "You (Plural/Formal) / شما", example: "Te olette ystäviäni." },
+    { finnish: "tervetuloa", english: "Welcome / خوش آمدید", example: "Tervetuloa kotiini!" },
+    { finnish: "tutustua", english: "To Get To Know / آشنا شدن", example: "Haluan tutustua sinuun." },
+    { finnish: "täydentää", english: "To Complete / تکمیل کردن", example: "Täydentää lomake, ole hyvä." },
+    { finnish: "uusi", english: "New / جدید", example: "Minulla on uusi kirja." },
+    { finnish: "vaimo", english: "Wife / همسر", example: "Hän on minun vaimo." },
+    { finnish: "vain", english: "Only / فقط", example: "Haluan vain vettä." },
+    { finnish: "vanha", english: "Old / قدیمی", example: "Tämä kirja on vanha." },
+    { finnish: "Venäjä", english: "Russia / روسیه", example: "Venäjä on iso maa." },
+    { finnish: "venäläinen", english: "Russian / روسی", example: "Hän on venäläinen." },
+    { finnish: "vuosi", english: "Year / سال", example: "Yksi vuosi on pitkä." },
+    { finnish: "vähän", english: "A Little / کمی", example: "Minä ymmärrän vähän." },
+    { finnish: "Yhdysvallat", english: "United States / ایالات متحده", example: "Yhdysvallat on kaukana." },
+    { finnish: "ymmärtää", english: "To Understand / فهمیدن", example: "En ymmärrä sinua." },
+    { finnish: "äidinkieli", english: "Mother Tongue / زبان مادری", example: "Suomi on minun äidinkieli." }
+],
+"Chapter 2": [
+    { finnish: "ajatella", english: "To Think / فکر کردن", example: "Minä ajattelen sinua." },
+    { finnish: "alkaa", english: "To Start / شروع کردن", example: "Tunti alkaa nyt." },
+    { finnish: "ammatti", english: "Profession / شغل", example: "Mikä on sinun ammattisi?" },
+    { finnish: "anoppi", english: "Mother-In-Law / مادر شوهر", example: "Anoppi asuu meidän kanssa." },
+    { finnish: "appi", english: "Father-In-Law / پدر شوهر", example: "Appi korjaa autoa." },
+    { finnish: "asiakas", english: "Customer / مشتری", example: "Asiakas osti kahvia." },
+    { finnish: "auto", english: "Car / ماشین", example: "Minulla on punainen auto." },
+    { finnish: "avoliitto", english: "Cohabitation / زندگی مشترک بدون ازدواج", example: "He elävät avoliitossa." },
+    { finnish: "avovaimo", english: "Common-Law Wife / همسر غیر رسمی", example: "Tässä on minun avovaimo." },
+    { finnish: "ei mitään", english: "Nothing / هیچ چیز", example: "Minulla ei ole mitään." },
+    { finnish: "eronnut", english: "Divorced / طلاق گرفته", example: "Olen eronnut jo." },
+    { finnish: "euro", english: "Euro / یورو", example: "Se maksaa kaksi euroa." },
+    { finnish: "haluta", english: "To Want / خواستن", example: "Haluan lisää kahvia." },
+    { finnish: "hampurilainen", english: "Hamburger / همبرگر", example: "Syön hampurilaisen lounaaksi." },
+    { finnish: "hinnasto", english: "Price List / لیست قیمت", example: "Tarkista hinnasto täältä." },
+    { finnish: "hinta", english: "Price / قیمت", example: "Mikä on hinta?" },
+    { finnish: "huomenta", english: "Good Morning / صبح بخیر", example: "Huomenta, miten nukuit?" },
+    { finnish: "hyvä", english: "Good / خوب", example: "Tämä on hyvä idea." },
+    { finnish: "iloinen", english: "Happy / شاد", example: "Olen iloinen tänään." },
+    { finnish: "insinööri", english: "Engineer / مهندس", example: "Hän työskentelee insinöörinä." },
+    { finnish: "iso", english: "Big / بزرگ", example: "Meillä on iso talo." },
+    { finnish: "isoisa", english: "Grandfather / پدربزرگ", example: "Isoisä kertoo tarinoita." },
+    { finnish: "isoäiti", english: "Grandmother / مادربزرگ", example: "Isoäiti leipoo pullaa." },
+    { finnish: "isa", english: "Father / پدر", example: "Isä ajaa autoa." },
+    { finnish: "itse", english: "Self / خود", example: "Teen tämän itse." },
+    { finnish: "kahvi", english: "Coffee / قهوه", example: "Juon kahvia aamulla." },
+    { finnish: "kahvila", english: "Cafe / کافه", example: "Tapasin hänet kahvilassa." },
+    { finnish: "kakku", english: "Cake / کیک", example: "Pidän suklaakakusta." },
+    { finnish: "kampaaja", english: "Hairdresser / آرایشگر", example: "Menin kampaajalle eilen." },
+    { finnish: "katsoa", english: "To Look / نگاه کردن", example: "Katson televisiota." },
+    { finnish: "keksiä", english: "To Invent / اختراع کردن", example: "Haluan keksiä jotain uutta." },
+    { finnish: "kello", english: "Clock / ساعت", example: "Katso kelloa!" },
+    { finnish: "kenen", english: "Whose / مال چه کسی", example: "Kenen kirja tämä on?" },
+    { finnish: "kirja", english: "Book / کتاب", example: "Luen uutta kirjaa." },
+    { finnish: "kissa", english: "Cat / گربه", example: "Minulla on kissa kotona." },
+    { finnish: "kiva", english: "Nice / خوب", example: "Tämä paikka on kiva." },
+    { finnish: "koira", english: "Dog / سگ", example: "Koira juoksee pihalla." },
+    { finnish: "kokki", english: "Cook / آشپز", example: "Kokki tekee ruokaa." },
+    { finnish: "korvapuusti", english: "Cinnamon Bun / نان دارچینی", example: "Haluatko korvapuustin?" },
+    { finnish: "kotona", english: "At Home / در خانه", example: "Olen kotona tänään." },
+    { finnish: "koulu", english: "School / مدرسه", example: "Lapset menevät kouluun." },
+    { finnish: "kuinka monta", english: "How Many / چند تا", example: "Kuinka monta kirjaa sinulla on?" },
+    { finnish: "kumppani", english: "Partner / شریک", example: "Hän on minun kumppani." },
+    { finnish: "kuukausi", english: "Month / ماه", example: "Yksi kuukausi on 30 päivää." },
+    { finnish: "kuva", english: "Picture / عکس", example: "Ota kuva meistä." },
+    { finnish: "laborantti", english: "Lab Technician / تکنسین آزمایشگاه", example: "Laborantti tekee testejä." },
+    { finnish: "lapsi", english: "Child / کودک", example: "Meillä on yksi lapsi." },
+    { finnish: "lemmikki", english: "Pet / حیوان خانگی", example: "Meillä on monta lemmikkiä." },
+    { finnish: "lääkäri", english: "Doctor / پزشک", example: "Kävin lääkärissä." },
+    { finnish: "maksaa", english: "To Pay / پرداخت کردن", example: "Haluan maksaa kortilla." },
+    { finnish: "mennä", english: "To Go / رفتن", example: "Menen kauppaan nyt." },
+    { finnish: "mielenkiintoinen", english: "Interesting / جالب", example: "Tämä kirja on mielenkiintoinen." },
+    { finnish: "miksi", english: "Why / چرا", example: "Miksi olet myöhässä?" },
+    { finnish: "millainen", english: "What Kind Of / چه نوع", example: "Millainen sää on?" },
+    { finnish: "minkälainen", english: "What Kind Of / چه نوع", example: "Minkälainen talo on?" },
+    { finnish: "milloin", english: "When / چه زمانی", example: "Milloin lähdemme?" },
+    { finnish: "mitä", english: "What / چه", example: "Mitä haluat syödä?" },
+    { finnish: "muistaa", english: "To Remember / به یاد آوردن", example: "Muistan sinut hyvin." },
+    { finnish: "mukava", english: "Pleasant / دلپذیر", example: "Ilta oli mukava." },
+    { finnish: "suklaa", english: "Chocolate / شکلات", example: "Syön suklaata joka päivä." },
+    { finnish: "sukulainen", english: "Relative / فامیل", example: "He ovat minun sukulaisia." },
+    { finnish: "taas", english: "Again / دوباره", example: "Kokeillaan taas huomenna." },
+    { finnish: "takaisin", english: "Back / برگشت", example: "Tulen takaisin pian." },
+    { finnish: "talo", english: "House / خانه", example: "Talo on vihreä." },
+    { finnish: "tee", english: "Tea / چای", example: "Haluan kupin teetä." },
+    { finnish: "tehdä", english: "To Do / انجام دادن", example: "Mitä aiot tehdä?" },
+    { finnish: "tietää", english: "To Know / دانستن", example: "En tiedä vastausta." },
+    { finnish: "toimittaja", english: "Reporter / خبرنگار", example: "Toimittaja kirjoittaa artikkelin." },
+    { finnish: "tyttö", english: "Girl / دختر", example: "Tyttö on pihalla." },
+    { finnish: "tyttöystävä", english: "Girlfriend / دوست دختر", example: "Tässä on minun tyttöystävä." },
+    { finnish: "työ", english: "Work / کار", example: "Minulla on paljon työtä." },
+    { finnish: "tänään", english: "Today / امروز", example: "Teen ruokaa tänään." },
+    { finnish: "täällä", english: "Here / اینجا", example: "Olen täällä odottamassa." },
+    { finnish: "töissä", english: "At Work / در محل کار", example: "Olen töissä vielä." },
+    { finnish: "ukki", english: "Grandpa / پدربزرگ", example: "Ukki nukkuu sohvalla." },
+    { finnish: "valokuva", english: "Photograph / عکس", example: "Näytä valokuva minulle." },
+    { finnish: "vanhemmat", english: "Parents / والدین", example: "Vanhemmat huolehtivat lapsesta." },
+    { finnish: "vasemmalla", english: "On The Left / در سمت چپ", example: "Kauppa on vasemmalla puolella." },
+    { finnish: "vasen", english: "Left / چپ", example: "Käänny vasemmalle seuraavasta." },
+    { finnish: "vastata", english: "To Answer / پاسخ دادن", example: "En osaa vastata." },
+    { finnish: "mummo", english: "Grandma / مادربزرگ", example: "Mummo on keittiössä." },
+    { finnish: "vauva", english: "Baby / نوزاد", example: "Vauva nukkuu nyt." },
+    { finnish: "musiikinopettaja", english: "Music Teacher / معلم موسیقی", example: "Musiikinopettaja soittaa pianoa." },
+    { finnish: "veli", english: "Brother / برادر", example: "Veljeni asuu kaukana." },
+    { finnish: "muu", english: "Other / دیگر", example: "Tarvitsen jotain muuta." },
+    { finnish: "vesi", english: "Water / آب", example: "Vettä on tärkeää juoda." },
+    { finnish: "myös", english: "Also / همچنین", example: "Haluan myös leipää." },
+    { finnish: "vuoro", english: "Turn / نوبت", example: "Onko minun vuoro?" },
+    { finnish: "naimisissa", english: "Married / متأهل", example: "Olen naimisissa jo." },
+    { finnish: "yhdessä", english: "Together / با هم", example: "He asuvat yhdessä." },
+    { finnish: "noin", english: "About / حدود", example: "Matka kestää noin tunnin." },
+    { finnish: "nyt", english: "Now / اکنون", example: "Aloitetaan nyt." },
+    { finnish: "odottaa", english: "To Wait / منتظر بودن", example: "Odotan bussia." },
+    { finnish: "oikea", english: "Right / راست یا درست", example: "Onko tämä oikea osoite?" },
+    { finnish: "oikealla", english: "On The Right / در سمت راست", example: "Koulu on oikealla puolella." },
+    { finnish: "olla kotoisin", english: "To Be From / اهل بودن", example: "Olen kotoisin Suomesta." },
+    { finnish: "olut", english: "Beer / آبجو", example: "En juo olutta." },
+    { finnish: "oma", english: "Own / خود", example: "Tämä on minun oma auto." },
+    { finnish: "ostaa", english: "To Buy / خریدن", example: "Haluan ostaa tämän kirjan." },
+    { finnish: "pala", english: "Piece / تکه", example: "Ota pala kakkua." },
+    { finnish: "paljon", english: "A Lot / بسیار", example: "Minulla on paljon töitä." },
+    { finnish: "pappa", english: "Grandpa / پدربزرگ", example: "Pappa kertoo vitsin." },
+    { finnish: "paras", english: "Best / بهترین", example: "Tämä on paras elokuva." },
+    { finnish: "perhe", english: "Family / خانواده", example: "Meillä on iso perhe." },
+    { finnish: "perheenjäsen", english: "Family Member / عضو خانواده", example: "Hän on perheenjäseneni." },
+    { finnish: "pieni", english: "Small / کوچک", example: "Minulla on pieni koira." },
+    { finnish: "poika", english: "Boy / پسر", example: "Poika leikkii pihalla." },
+    { finnish: "sairaanhoitaja", english: "Nurse / پرستار", example: "Sairaanhoitaja auttaa potilasta." },
+    { finnish: "sama", english: "Same / همان", example: "Meillä on sama sukunimi." },
+    { finnish: "sentti", english: "Cent / سنت", example: "Minulla ei ole senttiäkään." },
+    { finnish: "sinkku", english: "Single / مجرد", example: "Olen sinkku vielä." },
+    { finnish: "sisko", english: "Sister / خواهر", example: "Siskoni on nuori." },
+    { finnish: "yksin", english: "Alone / تنها", example: "Asun yksin." },
+    { finnish: "yksinhuoltaja", english: "Single Parent / سرپرست تنها", example: "Olen yksinhuoltajaäiti." },
+    { finnish: "yläkerta", english: "Upstairs / طبقه بالا", example: "Huoneeni on yläkerrassa." },
+    { finnish: "yrittäjä", english: "Entrepreneur / کارآفرین", example: "Olen yrittäjä." },
+    { finnish: "ystävä", english: "Friend / دوست", example: "Hän on minun hyvä ystävä." },
+    { finnish: "äiti", english: "Mother / مادر", example: "Äiti laittaa ruokaa." }
+],
+      "Chapter 3": [
+    { finnish: "aamu", english: "Morning / صبح", example: "Aamu alkaa aikaisin." },
+    { finnish: "aamupala", english: "Breakfast / صبحانه", example: "Syön aamupalaa nyt." },
+    { finnish: "aikaisin", english: "Early / زود", example: "Minä herään aikaisin." },
+    { finnish: "aikuinen", english: "Adult / بزرگسال", example: "Olen jo aikuinen." },
+    { finnish: "apu", english: "Help / کمک", example: "Tarvitsen apua." },
+    { finnish: "arkipäivä", english: "Weekday / روز کاری", example: "Maanantai on arkipäivä." },
+    { finnish: "asia", english: "Thing / موضوع", example: "Minulla on tärkeä asia." },
+    { finnish: "auki", english: "Open / باز", example: "Kauppa on auki vielä." },
+    { finnish: "aukioloajat", english: "Opening Hours / ساعات کاری", example: "Tarkista aukioloajat netistä." },
+    { finnish: "avata", english: "To Open / باز کردن", example: "Voitko avata oven?" },
+    { finnish: "banaani", english: "Banana / موز", example: "Syön banaanin aamulla." },
+    { finnish: "bussi", english: "Bus / اتوبوس", example: "Odotan bussia pysäkillä." },
+    { finnish: "ensin", english: "First / اول", example: "Ensin keitän kahvia." },
+    { finnish: "henkilö", english: "Person / شخص", example: "Yksi henkilö odottaa aulassa." },
+    { finnish: "herätä", english: "To Wake Up / بیدار شدن", example: "Herään kello seitsemän." },
+    { finnish: "hetkinen", english: "Just A Moment / لحظه‌ای", example: "Odota hetkinen, ole hyvä." },
+    { finnish: "hoitaa", english: "To Take Care / مراقبت کردن", example: "Minä hoidan kukkia." },
+    { finnish: "hyvin", english: "Well / خوب", example: "Kaikki sujui hyvin." },
+    { finnish: "ihminen", english: "Human / انسان", example: "Jokainen ihminen tarvitsee unta." },
+    { finnish: "ilta", english: "Evening / عصر", example: "Ilta on jo pimeä." },
+    { finnish: "istua", english: "To Sit / نشستن", example: "Istu tähän viereeni." },
+    { finnish: "jugurtti", english: "Yogurt / ماست", example: "Syön jugurttia aamupalaksi." },
+    { finnish: "juoda", english: "To Drink / نوشیدن", example: "Haluan juoda vettä." },
+    { finnish: "jutella", english: "To Chat / گپ زدن", example: "Voimmeko jutella hetken?" },
+    { finnish: "jääkiekko", english: "Ice Hockey / هاکی روی یخ", example: "Suomessa jääkiekko on suosittua." },
+    { finnish: "kampaamo", english: "Hair Salon / آرایشگاه", example: "Varasin ajan kampaamoon." },
+    { finnish: "kanssa", english: "With / با", example: "Menin kauppaan ystävän kanssa." },
+    { finnish: "kauppa", english: "Store / فروشگاه", example: "Käyn kaupassa joka päivä." },
+    { finnish: "kaveri", english: "Buddy / دوست", example: "Tapasin uuden kaverin tänään." },
+    { finnish: "keittiö", english: "Kitchen / آشپزخانه", example: "Keittiö on siisti." },
+    { finnish: "keittää", english: "To Boil / جوشاندن", example: "Keitän perunat ensin." },
+    { finnish: "keskustelu", english: "Conversation / گفتگو", example: "Meillä oli pitkä keskustelu." },
+    { finnish: "kesä", english: "Summer / تابستان", example: "Kesä on lämmin." },
+    { finnish: "kielletty", english: "Forbidden / ممنوع", example: "Täällä tupakointi on kielletty." },
+    { finnish: "kiinni", english: "Closed / بسته", example: "Ovi on kiinni." },
+    { finnish: "kiire", english: "Hurry / عجله", example: "Minulla on kiire töihin." },
+    { finnish: "kioski", english: "Kiosk / دکه", example: "Ostan lehden kioskista." },
+    { finnish: "kirjasto", english: "Library / کتابخانه", example: "Lainaan kirjoja kirjastosta." },
+    { finnish: "koska", english: "Because / چون", example: "En tule, koska olen sairas." },
+    { finnish: "koululainen", english: "Pupil / دانش‌آموز", example: "Hän on vielä koululainen." },
+    { finnish: "kuin", english: "Like / مثل", example: "Hän on nopea kuin tuuli." },
+    { finnish: "kuollut", english: "Dead / مرده", example: "Kasvi on kuollut ilman vettä." },
+    { finnish: "kyltti", english: "Sign / تابلو", example: "Katso kylttiä oven edessä." },
+    { finnish: "kysyä", english: "To Ask / پرسیدن", example: "Haluan kysyä sinulta jotain." },
+    { finnish: "käydä", english: "To Visit / رفتن", example: "Käyn kirjastossa usein." },
+    { finnish: "lakimies", english: "Lawyer / وکیل", example: "Tarvitsen lakimiehen apua." },
+    { finnish: "sitten", english: "Then / سپس", example: "Syön, sitten lähden ulos." },
+    { finnish: "sohva", english: "Sofa / مبل", example: "Istu sohvalle ja rentoudu." },
+    { finnish: "lastentarhanopettaja", english: "Kindergarten Teacher / مربی مهدکودک", example: "Lastentarhanopettaja hoitaa lapsia." },
+    { finnish: "soittaa", english: "To Call / زنگ زدن", example: "Soitan sinulle myöhemmin." },
+    { finnish: "sopia", english: "To Agree / موافقت کردن", example: "Sovimme tapaamisesta." },
+    { finnish: "suihku", english: "Shower / دوش", example: "Menin suihkuun aamulla." },
+    { finnish: "suljettu", english: "Closed / بسته", example: "Kauppa on suljettu sunnuntaisin." },
+    { finnish: "syödä", english: "To Eat / خوردن", example: "Syön lounasta koulussa." },
+    { finnish: "tapahtua", english: "To Happen / اتفاق افتادن", example: "Mitä voi tapahtua nyt?" },
+    { finnish: "tarjous", english: "Offer / پیشنهاد", example: "Onko teillä tarjous kahvista?" },
+    { finnish: "tarvita", english: "To Need / نیاز داشتن", example: "Tarvitsen apua heti." },
+    { finnish: "tavallinen", english: "Ordinary / معمولی", example: "Tämä päivä on tavallinen." },
+    { finnish: "laulaa", english: "To Sing / آواز خواندن", example: "Haluan laulaa karaokea." },
+    { finnish: "lehti", english: "Magazine / مجله", example: "Luin lehden aamulla." },
+    { finnish: "leikkiä", english: "To Play / بازی کردن", example: "Lapset leikkivät puistossa." },
+    { finnish: "leipoa", english: "To Bake / پختن", example: "Aion leipoa kakun." },
+    { finnish: "leipä", english: "Bread / نان", example: "Syön leipää joka aamu." },
+    { finnish: "loppu", english: "End / پایان", example: "Elokuva on nyt loppu." },
+    { finnish: "lounas", english: "Lunch / ناهار", example: "Syön lounaan klo 12." },
+    { finnish: "lukea", english: "To Read / خواندن", example: "Luen kirjaa sängyssä." },
+    { finnish: "lähteä", english: "To Leave / ترک کردن", example: "Lähden töihin kahdeksalta." },
+    { finnish: "maito", english: "Milk / شیر", example: "Juon maitoa kahvin kanssa." },
+    { finnish: "makaronilaatikko", english: "Macaroni Casserole / گراتن ماکارونی", example: "Makaronilaatikko on suosittu ruoka." },
+    { finnish: "matematiikka", english: "Mathematics / ریاضیات", example: "Opiskelen matematiikkaa yliopistossa." },
+    { finnish: "meikata", english: "To Put On Makeup / آرایش کردن", example: "Meikkaan vain juhliin." },
+    { finnish: "musiikki", english: "Music / موسیقی", example: "Pidän klassisesta musiikista." },
+    { finnish: "mutta", english: "But / اما", example: "Haluaisin tulla, mutta en ehdi." },
+    { finnish: "myöhään", english: "Late / دیر", example: "Nukkumaanmeno venyi myöhään." },
+    { finnish: "nauraa", english: "To Laugh / خندیدن", example: "Nauroimme hauskoille vitseille." },
+    { finnish: "nousta", english: "To Get Up / بلند شدن", example: "Minä nousen sängystä hitaasti." },
+    { finnish: "nukkua", english: "To Sleep / خوابیدن", example: "Haluan nukkua pidempään." },
+    { finnish: "opiskelija", english: "Student / دانشجو", example: "Olen opiskelija yliopistossa." },
+    { finnish: "ottaa", english: "To Take / گرفتن", example: "Otan kahvia, kiitos." },
+    { finnish: "ovi", english: "Door / در", example: "Sulje ovi, ole hyvä." },
+    { finnish: "palvella", english: "To Serve / خدمت کردن", example: "Yritän palvella asiakkaita hyvin." },
+    { finnish: "pari", english: "Couple / زوج", example: "He ovat onnellinen pari." },
+    { finnish: "parkkihalli", english: "Parking Garage / پارکینگ سرپوشیده", example: "Auto on parkkihallissa." },
+    { finnish: "parturi", english: "Barber / آرایشگر مردانه", example: "Kävin parturissa eilen." },
+    { finnish: "pelata", english: "To Play / بازی کردن", example: "Pelataan jalkapalloa yhdessä." },
+    { finnish: "pestä", english: "To Wash / شستن", example: "Pesin kädet ennen ruokaa." },
+    { finnish: "pesula", english: "Laundry / خشکشویی", example: "Vien vaatteet pesulaan." },
+    { finnish: "pitkään", english: "For A Long Time / برای مدت طولانی", example: "Olin ulkona pitkään." },
+    { finnish: "polttaa", english: "To Burn / سوزاندن", example: "Älä polta roskia." },
+    { finnish: "posti", english: "Post / پست", example: "Hain paketin postista." },
+    { finnish: "purukumi", english: "Chewing Gum / آدامس", example: "Pureskelen purukumia." },
+    { finnish: "pysäköidä", english: "To Park / پارک کردن", example: "Missä voin pysäköidä auton?" },
+    { finnish: "pyykki", english: "Laundry / لباس‌های شستنی", example: "Pesin pyykit eilen." },
+    { finnish: "päivä", english: "Day / روز", example: "Tämä päivä on aurinkoinen." },
+    { finnish: "päiväkoti", english: "Daycare / مهدکودک", example: "Lapsi on päiväkodissa." },
+    { finnish: "rakastaa", english: "To Love / دوست داشتن", example: "Rakastan perhettäni." },
+    { finnish: "ravintola", english: "Restaurant / رستوران", example: "Syön ravintolassa tänään." },
+    { finnish: "resepti", english: "Recipe / دستور پخت", example: "Tarvitsen reseptin kakkuun." },
+    { finnish: "ruoka", english: "Food / غذا", example: "Ruoka on valmista." },
+    { finnish: "salmiakki", english: "Salty Licorice / شیرین‌بیان شور", example: "Monet suomalaiset pitävät salmiakista." },
+    { finnish: "siivota", english: "To Clean / تمیز کردن", example: "Aion siivota huoneeni." },
+    { finnish: "siksi", english: "Therefore / بنابراین", example: "Olen sairas, siksi en tule." },
+    { finnish: "tavara", english: "Item / کالا", example: "Pakkaan tavarat matkalaukkuun." },
+    { finnish: "tavata", english: "To Meet / ملاقات کردن", example: "Voimmeko tavata huomenna?" },
+    { finnish: "tennis", english: "Tennis / تنیس", example: "Pelaan tennistä ystävien kanssa." },
+    { finnish: "termospullo", english: "Thermos / فلاسک", example: "Otan termospullon mukaan." },
+    { finnish: "tietokone", english: "Computer / رایانه", example: "Käytän tietokonetta päivittäin." },
+    { finnish: "tosi", english: "Really / واقعی", example: "Tämä on tosi hyvä idea." },
+    { finnish: "tulitikut", english: "Matches / کبریت", example: "Tarvitsen tulitikkuja nuotioon." },
+    { finnish: "tulla", english: "To Come / آمدن", example: "Tulen sinne klo 10." },
+    { finnish: "tupakka", english: "Tobacco / تنباکو", example: "En käytä tupakkaa." },
+    { finnish: "tupakoida", english: "To Smoke / سیگار کشیدن", example: "Älä tupakoi sisällä." },
+    { finnish: "tuttu", english: "Familiar / آشنا", example: "Tämä paikka on tuttu minulle." },
+    { finnish: "työpäivä", english: "Workday / روز کاری", example: "Huomenna on pitkä työpäivä." },
+    { finnish: "töissä", english: "At Work / در محل کار", example: "Olen töissä kello neljään." },
+    { finnish: "ulkona", english: "Outside / بیرون", example: "Lähden ulkona kävelylle." },
+    { finnish: "ulos", english: "Out / به بیرون", example: "Menemme ulos syömään." },
+    { finnish: "vapaapäivä", english: "Day Off / روز تعطیل", example: "Minulla on vapaapäivä tänään." },
+    { finnish: "varata", english: "To Book / رزرو کردن", example: "Haluan varata ajan kampaajalle." },
+    { finnish: "varattu", english: "Reserved / رزرو شده", example: "Pöytä on varattu." },
+    { finnish: "viedä", english: "To Take / بردن", example: "Voitko viedä roskat?" },
+    { finnish: "viesti", english: "Message / پیام", example: "Lähetin sinulle viestin." },
+    { finnish: "viikonloppu", english: "Weekend / آخر هفته", example: "Odotan viikonloppua." },
+    { finnish: "viini", english: "Wine / شراب", example: "Tarjoiletteko viiniä?" },
+    { finnish: "voida", english: "Can / توانستن", example: "Voinko auttaa sinua?" },
+    { finnish: "välipala", english: "Snack / میان‌وعده", example: "Syön välipalan iltapäivällä." },
+    { finnish: "väsynyt", english: "Tired / خسته", example: "Olen väsynyt tänään." }
+],
+      "Chapter 4": [
+    { finnish: "aika", english: "Time / زمان", example: "Minulla ei ole paljon aikaa." },
+    { finnish: "ananas", english: "Pineapple / آناناس", example: "Ananas maistuu makealta." },
+    { finnish: "appelsiini", english: "Orange / پرتقال", example: "Kuorin appelsiinin." },
+    { finnish: "aueta", english: "To Open (By Itself) / باز شدن", example: "Ovi aukesi itsestään." },
+    { finnish: "broileri", english: "Broiler / جوجه", example: "Ostan broileria ruuaksi." },
+    { finnish: "gramma", english: "Gram / گرم", example: "Tarvitsen sata grammaa juustoa." },
+    { finnish: "halpa", english: "Cheap / ارزان", example: "Tämä tuote on halpa." },
+    { finnish: "henkilöllisyystodistus", english: "ID Card / کارت شناسایی", example: "Näytä henkilöllisyystodistus kassalla." },
+    { finnish: "homejuusto", english: "Blue Cheese / پنیر کپک‌زده", example: "En pidä homejuustosta." },
+    { finnish: "hylly", english: "Shelf / قفسه", example: "Kirja on hyllyllä." },
+    { finnish: "ihan", english: "Quite / کاملاً", example: "Se on ihan hyvä idea." },
+    { finnish: "jauheliha", english: "Minced Meat / گوشت چرخ‌کرده", example: "Teen jauhelihakastiketta." },
+    { finnish: "jono", english: "Queue / صف", example: "Seiso jonossa, ole hyvä." },
+    { finnish: "jotain", english: "Something / چیزی", example: "Haluaisin jotain syötävää." },
+    { finnish: "juhlat", english: "Party / جشن‌ها", example: "Juhlat alkavat illalla." },
+    { finnish: "juusto", english: "Cheese / پنیر", example: "Laitan juustoa leivälle." },
+    { finnish: "jäätelö", english: "Ice Cream / بستنی", example: "Syön jäätelöä kesällä." },
+    { finnish: "kaali", english: "Cabbage / کلم", example: "Keitän kaalikeittoa." },
+    { finnish: "kaappi", english: "Cabinet / کابینت", example: "Laita astiat kaappiin." },
+    { finnish: "kala", english: "Fish / ماهی", example: "Paistan kalan illalliseksi." },
+    { finnish: "kallis", english: "Expensive / گران", example: "Tämä laukku on kallis." },
+    { finnish: "kana", english: "Chicken / مرغ", example: "Kana on uunissa nyt." },
+    { finnish: "kananmuna", english: "Egg / تخم‌مرغ", example: "Tarvitsen kolme kananmunaa." },
+    { finnish: "kanta-asiakas", english: "Regular Customer / مشتری دائمی", example: "Olen kanta-asiakas tässä kaupassa." },
+    { finnish: "karkki", english: "Candy / آبنبات", example: "Syön karkkia joskus." },
+    { finnish: "kassa", english: "Cash Register / صندوق", example: "Menen kassalle maksamaan." },
+    { finnish: "kassi", english: "Bag / کیسه", example: "Pakkaan ostokset kassiin." },
+    { finnish: "kasvis", english: "Vegetable / سبزیجات", example: "Syön paljon kasviksia." },
+    { finnish: "kasvissyöjä", english: "Vegetarian / گیاه‌خوار", example: "Olen kasvissyöjä." },
+    { finnish: "kauppalista", english: "Shopping List / لیست خرید", example: "Kirjoitan kauppalistan etukäteen." },
+    { finnish: "keitto", english: "Soup / سوپ", example: "Syön kuumaa keittoa." },
+    { finnish: "kerma", english: "Cream / خامه", example: "Lisään kermaa kahviini." },
+    { finnish: "kiire", english: "Hurry / عجله", example: "Minulla on kiire töihin." },
+    { finnish: "kilo", english: "Kilo / کیلو", example: "Ostan yhden kilon omenoita." },
+    { finnish: "kinkku", english: "Ham / ژامبون", example: "Kinkku maistuu hyvältä." },
+    { finnish: "kissanruoka", english: "Cat Food / غذای گربه", example: "Ostan kissanruokaa lemmikilleni." },
+    { finnish: "kokonainen", english: "Whole / کامل", example: "Haluan kokonaisen leivän." },
+    { finnish: "kortti", english: "Card / کارت", example: "Maksan kortilla." },
+    { finnish: "kuitti", english: "Receipt / رسید", example: "Ota kuitti talteen." },
+    { finnish: "kurkku", english: "Cucumber / خیار", example: "Leikkaan kurkkua salaattiin." },
+    { finnish: "kylmä", english: "Cold / سرد", example: "Ulkona on kylmä sää." },
+    { finnish: "kysyä", english: "To Ask / پرسیدن", example: "Haluan kysyä sinulta jotakin." },
+    { finnish: "kävellä", english: "To Walk / راه رفتن", example: "Kävelen puistoon." },
+    { finnish: "käyttää", english: "To Use / استفاده کردن", example: "Käytän tietokonetta työssäni." },
+    { finnish: "laittaa", english: "To Put / قرار دادن", example: "Laitan ruuan pöydälle." },
+    { finnish: "laktoosi", english: "Lactose / لاکتوز", example: "En juo maitoa laktoosin vuoksi." },
+    { finnish: "leipä", english: "Bread / نان", example: "Tarvitsetko leipää?" },
+    { finnish: "liha", english: "Meat / گوشت", example: "Liha on jääkaapissa." },
+    { finnish: "litra", english: "Liter / لیتر", example: "Ostan yhden litran maitoa." },
+    { finnish: "lohi", english: "Salmon / ماهی سالمون", example: "Pidän lohikeitosta." },
+    { finnish: "lopuksi", english: "Finally / در نهایت", example: "Lopuksi menen nukkumaan." },
+    { finnish: "lyhenne", english: "Abbreviation / مخفف", example: "Tämä on yleinen lyhenne." },
+    { finnish: "lähellä", english: "Near / نزدیک", example: "Kauppa on lähellä kotia." },
+    { finnish: "lämmin", english: "Warm / گرم", example: "Tämä takki on lämmin." },
+    { finnish: "makea", english: "Sweet / شیرین", example: "Tämä kakku on makea." },
+    { finnish: "makkara", english: "Sausage / سوسیس", example: "Paistan makkaraa nuotiolla." },
+    { finnish: "mauste", english: "Spice / ادویه", example: "Lisään mausteita kastikkeeseen." },
+    { finnish: "mehu", english: "Juice / آب‌میوه", example: "Juon mehua aamulla." },
+    { finnish: "minkä hintainen", english: "What Price / چه قیمتی", example: "Minkä hintainen tämä tuote on?" },
+    { finnish: "muovi", english: "Plastic / پلاستیک", example: "Tämä pullo on muovia." },
+    { finnish: "muovikassi", english: "Plastic Bag / کیسه پلاستیکی", example: "Tarvitsetko muovikassin?" },
+    { finnish: "muuttua", english: "To Change / تغییر کردن", example: "Sää voi muuttua nopeasti." },
+    { finnish: "myyjä", english: "Salesperson / فروشنده", example: "Myyjä auttoi minua." },
+    { finnish: "nauta", english: "Beef / گاو", example: "Nauta on punaisempaa lihaa." },
+    { finnish: "omena", english: "Apple / سیب", example: "Syön omenan välipalaksi." },
+    { finnish: "ostos", english: "Purchase / خرید", example: "Tein ison ostoksen tänään." },
+    { finnish: "ostoskärryt", english: "Shopping Cart / چرخ خرید", example: "Työnnän ostoskärryjä kaupassa." },
+    { finnish: "painaa", english: "To Weigh / وزن داشتن", example: "Kuinka paljon tämä paketti painaa?" },
+    { finnish: "paisti", english: "Roast / گوشت بریان", example: "Paisti kypsyy uunissa." },
+    { finnish: "pakaste", english: "Frozen Food / یخ‌زده", example: "Pakaste on pakattu muoviin." },
+    { finnish: "pakata", english: "To Pack / بسته‌بندی کردن", example: "Pakkaan matkalaukun huomenna." },
+    { finnish: "paketti", english: "Package / بسته", example: "Sain paketin postissa." },
+    { finnish: "pakkaus", english: "Packaging / بسته‌بندی", example: "Tarkista pakkaus huolellisesti." },
+    { finnish: "pantti", english: "Deposit / ودیعه", example: "Pullossa on pantti." },
+    { finnish: "paprika", english: "Bell Pepper / فلفل دلمه‌ای", example: "Leikkaan paprikaa salaattiin." },
+    { finnish: "patukka", english: "Bar / شکلات تخته‌ای", example: "Ostan suklaapatukan välipalaksi." },
+    { finnish: "perinteinen", english: "Traditional / سنتی", example: "Tämä resepti on perinteinen." },
+    { finnish: "peruna", english: "Potato / سیب‌زمینی", example: "Kuorin perunoita keittoon." },
+    { finnish: "pippuri", english: "Pepper / فلفل", example: "Lisään pippuria keittoon." },
+    { finnish: "pitkä", english: "Long / بلند", example: "Tämä matka on pitkä." },
+    { finnish: "porkkana", english: "Carrot / هویج", example: "Pesen porkkanat ennen käyttöä." },
+    { finnish: "pussi", english: "Bag / کیسه", example: "Ostan hedelmät pussissa." },
+    { finnish: "rasia", english: "Box / جعبه", example: "Laitan marjat rasiaan." },
+    { finnish: "rasvaton", english: "Fat-Free / بدون چربی", example: "Tämä maito on rasvatonta." },
+    { finnish: "riisi", english: "Rice / برنج", example: "Keitän riisiä illalliseksi." },
+    { finnish: "rulla", english: "Roll / رول", example: "Tarvitsen rullan paperia." },
+    { finnish: "saada", english: "To Get / دریافت کردن", example: "Voinko saada kuitin?" },
+    { finnish: "salaatti", english: "Salad / سالاد", example: "Tämä salaatti on tuore." },
+    { finnish: "sauna", english: "Sauna / سونا", example: "Menen saunaan illalla." },
+    { finnish: "sika", english: "Pig / خوک", example: "Sianliha on vaaleaa lihaa." },
+    { finnish: "sipuli", english: "Onion / پیاز", example: "Hienonnan sipulin kastikkeeseen." },
+    { finnish: "sokeri", english: "Sugar / شکر", example: "Lisään sokeria kahviin." },
+    { finnish: "suola", english: "Salt / نمک", example: "Ruoka tarvitsee suolaa." },
+    { finnish: "suolainen", english: "Salty / شور", example: "Tämä ruoka on liian suolainen." },
+    { finnish: "sämpylä", english: "Bread Roll / نان گرد", example: "Syön sämpylän aamupalaksi." },
+    { finnish: "tilli", english: "Dill / شوید", example: "Ripottelen tilliä kalan päälle." },
+    { finnish: "tiski", english: "Counter / پیشخوان", example: "Menen tiskille tilaamaan." },
+    { finnish: "tomaatti", english: "Tomato / گوجه‌فرنگی", example: "Pilkon tomaatit salaattiin." },
+    { finnish: "tonnikala", english: "Tuna / ماهی تن", example: "Syön tonnikalaa leivän päällä." },
+    { finnish: "tumma", english: "Dark / تیره", example: "Pidän tummasta suklaasta." },
+    { finnish: "tuo", english: "That / آن", example: "Voitko antaa minulle tuon kirjan?" },
+    { finnish: "tuore", english: "Fresh / تازه", example: "Hedelmät ovat tuoreita." },
+    { finnish: "tuoremehu", english: "Fresh Juice / آب‌میوه تازه", example: "Valmistan tuoremehun itse." },
+    { finnish: "vaalea", english: "Light / روشن", example: "Tämä leipä on vaaleaa." },
+    { finnish: "valkosipuli", english: "Garlic / سیر", example: "Valkosipuli antaa paljon makua." },
+    { finnish: "vielä", english: "Still / هنوز", example: "Minulla on vielä aikaa." },
+    { finnish: "vihannes", english: "Vegetable / سبزی", example: "Ostan paljon vihanneksia." },
+    { finnish: "voi", english: "Butter / کره", example: "Levitän voita leivälle." },
+    { finnish: "vuoronumero", english: "Queue Number / شماره نوبت", example: "Odotan vuoronumeroani." }
+],
+      "Chapter 5": [
+    { finnish: "aihe", english: "Topic / موضوع", example: "Tämä aihe on mielenkiintoinen." },
+    { finnish: "alakerta", english: "Downstairs / پایین", example: "Alakerta on kylmä." },
+    { finnish: "Alko", english: "Alko (Liquor Store) / الکو", example: "Alko on kiinni sunnuntaisin." },
+    { finnish: "antaa", english: "To Give / دادن", example: "Anna se minulle." },
+    { finnish: "apteekki", english: "Pharmacy / داروخانه", example: "Menen apteekkiin ostamaan lääkettä." },
+    { finnish: "astia", english: "Dish / ظرف", example: "Tiskaan astioita keittiössä." },
+    { finnish: "asunto", english: "Apartment / آپارتمان", example: "Minulla on pieni asunto." },
+    { finnish: "auttaa", english: "To Help / کمک کردن", example: "Voitko auttaa minua?" },
+    { finnish: "avain", english: "Key / کلید", example: "Missä on minun avain?" },
+    { finnish: "baari", english: "Bar / بار", example: "Tapaan ystäviä baarissa." },
+    { finnish: "biojäte", english: "Biowaste / زباله زیستی", example: "Laita biojäte ruskeaan astiaan." },
+    { finnish: "erilainen", english: "Different / متفاوت", example: "Tämä on erilainen tapa." },
+    { finnish: "eteinen", english: "Hallway / ورودی", example: "Jätän kengät eteiseen." },
+    { finnish: "farkut", english: "Jeans / شلوار جین", example: "Puen farkut tänään." },
+    { finnish: "haarukka", english: "Fork / چنگال", example: "Tarvitsen haarukan syömiseen." },
+    { finnish: "hiukset", english: "Hair / مو", example: "Minun hiukset ovat pitkät." },
+    { finnish: "huone", english: "Room / اتاق", example: "Tämä huone on valoisa." },
+    { finnish: "huonekalu", english: "Furniture / مبلمان", example: "Ostin uuden huonekalun." },
+    { finnish: "ikävä", english: "Longing / دلتنگ", example: "Minulla on ikävä sinua." },
+    { finnish: "joskus", english: "Sometimes / گاهی", example: "Joskus käyn lenkillä illalla." },
+    { finnish: "juna", english: "Train / قطار", example: "Juna lähtee asemalta pian." },
+    { finnish: "juna-asema", english: "Train Station / ایستگاه قطار", example: "Tapaan sinut juna-asemalla." },
+    { finnish: "järvi", english: "Lake / دریاچه", example: "Käyn uimaan järvessä." },
+    { finnish: "jäte", english: "Waste / زباله", example: "Vie jäte roskikseen." },
+    { finnish: "kaksio", english: "Two-Room Apartment / آپارتمان دو خوابه", example: "Asun kahdestaan kaksiossa." },
+    { finnish: "kattila", english: "Pot / قابلمه", example: "Keitän perunoita kattilassa." },
+    { finnish: "kaukana", english: "Far / دور", example: "Kauppa on kaukana meiltä." },
+    { finnish: "kaunis", english: "Beautiful / زیبا", example: "Tämä kaupunki on kaunis." },
+    { finnish: "kaupunginosa", english: "District / محله", example: "Asun rauhallisessa kaupunginosassa." },
+    { finnish: "keittokomero", english: "Kitchenette / آشپزخانه کوچک", example: "Pieni asuntoni sisältää keittokomeron." },
+    { finnish: "kellari", english: "Basement / زیرزمین", example: "Varastoin pyöräni kellarissa." },
+    { finnish: "kenkä", english: "Shoe / کفش", example: "Etsi toinen kenkäsi." },
+    { finnish: "kenno", english: "Cell / سلول", example: "Mehiläispesässä on monta kennoa." },
+    { finnish: "kerros", english: "Floor / طبقه", example: "Asun kuudennessa kerroksessa." },
+    { finnish: "keskusta", english: "City Center / مرکز شهر", example: "Menen keskustaan bussilla." },
+    { finnish: "kestää", english: "To Last / طول کشیدن", example: "Matka kestää tunnin." },
+    { finnish: "kierrättää", english: "To Recycle / بازیافت کردن", example: "Haluan kierrättää muovia." },
+    { finnish: "kierrätys", english: "Recycling / بازیافت", example: "Kierrätys on tärkeää ympäristölle." },
+    { finnish: "kirjekuori", english: "Envelope / پاکت نامه", example: "Laita kirje kirjekuoreen." },
+    { finnish: "kolmio", english: "Triangle / مثلث", example: "Geometriassa kolmio on perusmuoto." },
+    { finnish: "korjata", english: "To Repair / تعمیر کردن", example: "Korjaan polkupyöräni itse." },
+    { finnish: "kuiva", english: "Dry / خشک", example: "Pyykki on jo kuiva." },
+    { finnish: "kukka", english: "Flower / گل", example: "Annoin kukan ystävälle." },
+    { finnish: "kuori", english: "Peel / پوست", example: "Heitä banaanin kuori roskiin." },
+    { finnish: "kuppi", english: "Cup / فنجان", example: "Haluan kupin kahvia." },
+    { finnish: "kutsua", english: "To Invite / دعوت کردن", example: "Aion kutsua sinut juhliin." },
+    { finnish: "kuuma", english: "Hot / داغ", example: "Tämä kahvi on kuuma." },
+    { finnish: "kuunnella", english: "To Listen / گوش دادن", example: "Kuuntelen musiikkia iltaisin." },
+    { finnish: "kylpyhuone", english: "Bathroom / حمام", example: "Kylpyhuone on remontoitu." },
+    { finnish: "lattia", english: "Floor / کف", example: "Puhdistan lattian mopilla." },
+    { finnish: "laukku", english: "Bag / کیف", example: "Pakkaan vaatteet laukkuun." },
+    { finnish: "liian", english: "Too / بیش از حد", example: "Tämä on liian kallis." },
+    { finnish: "loma", english: "Holiday / تعطیلات", example: "Odotan kesälomaa innolla." },
+    { finnish: "lusikka", english: "Spoon / قاشق", example: "Tarvitsen lusikan keittoa varten." },
+    { finnish: "lyhyt", english: "Short / کوتاه", example: "Matka on lyhyt tällä kertaa." },
+    { finnish: "lähettää", english: "To Send / ارسال کردن", example: "Lähetän kirjeen postissa." },
+    { finnish: "lääke", english: "Medicine / دارو", example: "Otan lääkeen aamulla." },
+    { finnish: "mainos", english: "Advertisement / تبلیغ", example: "Näin mainoksen lehdessä." },
+    { finnish: "makuuhuone", english: "Bedroom / اتاق خواب", example: "Makuuhuoneessa on kaksi sänkyä." },
+    { finnish: "matka", english: "Trip / سفر", example: "Matka perutaan huonon sään takia." },
+    { finnish: "metsä", english: "Forest / جنگل", example: "Kävelen metsässä rentoutuakseni." },
+    { finnish: "myydä", english: "To Sell / فروختن", example: "Haluan myydä vanhat vaatteeni." },
+    { finnish: "myöhässä", english: "Late / دیر", example: "Olen aina myöhässä töistä." },
+    { finnish: "neliömetri", english: "Square Meter / متر مربع", example: "Huoneen koko on 20 neliömetriä." },
+    { finnish: "näkyä", english: "To Be Visible / دیده شدن", example: "Valo näkyy kauas." },
+    { finnish: "olohuone", english: "Living Room / اتاق نشیمن", example: "Televisio on olohuoneessa." },
+    { finnish: "omakotitalo", english: "Detached House / خانه مستقل", example: "Olen muuttamassa omakotitaloon." },
+    { finnish: "pahvi", english: "Cardboard / مقوا", example: "Pahvi voidaan kierrättää." },
+    { finnish: "paikka", english: "Place / مکان", example: "Tämä on hyvä paikka piknikille." },
+    { finnish: "palvelut", english: "Services / خدمات", example: "Kaupungissa on hyvät palvelut." },
+    { finnish: "paperi", english: "Paper / کاغذ", example: "Kirjoitan muistiinpanot paperille." },
+    { finnish: "parveke", english: "Balcony / بالکن", example: "Parveke on pieni mutta viihtyisä." },
+    { finnish: "pesukone", english: "Washing Machine / ماشین لباسشویی", example: "Laitan pyykit pesukoneeseen." },
+    { finnish: "vastaanottaa", english: "To Receive / دریافت کردن", example: "Haluan vastaanottaa paketin." },
+    { finnish: "veitsi", english: "Knife / چاقو", example: "Varo, veitsi on terävä." },
+    { finnish: "verho", english: "Curtain / پرده", example: "Vedän verhon kiinni illalla." },
+    { finnish: "vieressä", english: "Next To / کنار", example: "Istuin ystäväni vieressä." },
+    { finnish: "viikko", english: "Week / هفته", example: "Viikko menee nopeasti." },
+    { finnish: "vuokra", english: "Rent / اجاره", example: "Maksoin vuokran eilen." },
+    { finnish: "vuokrata", english: "To Rent / اجاره کردن", example: "Haluan vuokrata asunnon." },
+    { finnish: "väri", english: "Color / رنگ", example: "Mikä on lempivärisi?" },
+    { finnish: "värikäs", english: "Colorful / رنگارنگ", example: "Tämä maalaus on todella värikäs." },
+    { finnish: "väärä", english: "Wrong / اشتباه", example: "Tämä on väärä osoite." },
+    { finnish: "yksinkertainen", english: "Simple / ساده", example: "Tehtävä on yksinkertainen." },
+    { finnish: "yksiö", english: "Studio Apartment / آپارتمان تک‌خوابه", example: "Asun yksiössä yksin." },
+    { finnish: "ruoantähde", english: "Food Scrap / باقیمانده غذا", example: "Heitä ruoantähteet biojätteeseen." },
+    { finnish: "rivitalo", english: "Row House / خانه ردیفی", example: "Asun rivitalossa perheeni kanssa." },
+    { finnish: "roska", english: "Trash / زباله", example: "Älä heitä roskia maahan." },
+    { finnish: "ruma", english: "Ugly / زشت", example: "Minusta tämä taulu on ruma." },
+    { finnish: "seinä", english: "Wall / دیوار", example: "Ripustan taulun seinälle." },
+    { finnish: "sekajäte", english: "Mixed Waste / زباله مخلوط", example: "Tämä menee sekajätteeseen." },
+    { finnish: "siisti", english: "Clean / تمیز", example: "Huone on nyt siisti." },
+    { finnish: "silmälasit", english: "Glasses / عینک", example: "Tarvitsen silmälasit lukemiseen." },
+    { finnish: "suuri", english: "Big / بزرگ", example: "Tämä kaupunki on hyvin suuri." },
+    { finnish: "piha", english: "Yard / حیاط", example: "Leikin lasten kanssa pihalla." },
+    { finnish: "pullo", english: "Bottle / بطری", example: "Minulla on vesipullo mukana." },
+    { finnish: "purkki", english: "Jar / قوطی", example: "Avaan purkin hilloa." },
+    { finnish: "puoli", english: "Half / نیم", example: "Otan vain puoli annosta." },
+    { finnish: "pysäkki", english: "Stop / ایستگاه", example: "Jään pois seuraavalla pysäkillä." },
+    { finnish: "pyörä", english: "Bike / دوچرخه", example: "Ajan pyörällä kouluun." },
+    { finnish: "radio", english: "Radio / رادیو", example: "Kuuntelen radiota autossa." },
+    { finnish: "rikki", english: "Broken / خراب", example: "Puhelin on rikki." },
+    { finnish: "sähkö", english: "Electricity / برق", example: "Täällä ei ole sähköä." },
+    { finnish: "säilyke", english: "Canned Food / کنسرو", example: "Ostan usein säilykkeitä." },
+    { finnish: "taivas", english: "Sky / آسمان", example: "Taivas on sininen tänään." },
+    { finnish: "taulu", english: "Painting / تابلو", example: "Ripustan taulun seinälle." },
+    { finnish: "terveiset", english: "Greetings / درودها", example: "Lähetän terveiset perheelle." },
+    { finnish: "tie", english: "Road / جاده", example: "Tie on liukas talvella." },
+    { finnish: "tilava", english: "Spacious / جادار", example: "Tämä huone on tilava." },
+    { finnish: "tori", english: "Market Square / میدان", example: "Ostan vihanneksia torilta." },
+    { finnish: "tyhjä", english: "Empty / خالی", example: "Lasini on tyhjä." },
+    { finnish: "tykätä", english: "To Like / دوست داشتن", example: "Tykkään tästä ruoasta." },
+    { finnish: "tyyny", english: "Pillow / بالش", example: "Tarvitsen pehmeän tyynyn." },
+    { finnish: "työkaveri", english: "Coworker / همکار", example: "Juttelen työkaverini kanssa." },
+    { finnish: "uida", english: "To Swim / شنا کردن", example: "Haluan uida järvessä." },
+    { finnish: "usein", english: "Often / اغلب", example: "Käyn usein kahvilassa." },
+    { finnish: "vaate", english: "Clothing / لباس", example: "Pesin kaikki vaatteet." },
+    { finnish: "vaihtaa", english: "To Change / تعویض کردن", example: "Haluan vaihtaa paitani." },
+    { finnish: "vaippa", english: "Diaper / پوشک", example: "Vauva tarvitsee puhtaan vaipan." }
+],
+      "Chapter 6": [
+    { finnish: "ajaa", english: "To Drive / رانندگی کردن", example: "Ajan autoa joka päivä." },
+    { finnish: "alhaalla", english: "Downstairs / پایین", example: "Hän odottaa alhaalla." },
+    { finnish: "alla", english: "Under / زیر", example: "Kissa on pöydän alla." },
+    { finnish: "aloittaa", english: "To Start / شروع کردن", example: "Aloitan työt aikaisin." },
+    { finnish: "aste", english: "Degree / درجه", example: "Ulkona on viisi astetta." },
+    { finnish: "aurinko", english: "Sun / خورشید", example: "Aurinko paistaa taivaalla." },
+    { finnish: "edessä", english: "In Front / جلوی", example: "Auto on talon edessä." },
+    { finnish: "eilen", english: "Yesterday / دیروز", example: "Kävin kaupassa eilen." },
+    { finnish: "ennätys", english: "Record / رکورد", example: "Tein uuden ennätyksen!" },
+    { finnish: "ensilumi", english: "First Snow / اولین برف", example: "Ensilumi satoi yöllä." },
+    { finnish: "etsiä", english: "To Search / جستجو کردن", example: "Etsin kadonnutta avainta." },
+    { finnish: "haalarit", english: "Overalls / سرهمی", example: "Lapsi pukee haalarit ulos mennessään." },
+    { finnish: "hakea", english: "To Fetch / دنبال کردن", example: "Haen postin laatikosta." },
+    { finnish: "hame", english: "Skirt / دامن", example: "Tämä hame on kaunis." },
+    { finnish: "harrastus", english: "Hobby / سرگرمی", example: "Lukeminen on minun harrastus." },
+    { finnish: "herne", english: "Pea / نخود", example: "Hernekeitto on maukasta." },
+    { finnish: "hiihtää", english: "To Ski / اسکی کردن", example: "Talvella hiihdän joka viikonloppu." },
+    { finnish: "hissi", english: "Elevator / آسانسور", example: "Otan hissin kuudenteen kerrokseen." },
+    { finnish: "housut", english: "Pants / شلوار", example: "Nämä housut ovat mukavat." },
+    { finnish: "huomenna", english: "Tomorrow / فردا", example: "Tavataan huomenna." },
+    { finnish: "hyvällä tuulella", english: "In A Good Mood / خوشحال", example: "Olen tänään hyvällä tuulella." },
+    { finnish: "illalla", english: "In The Evening / عصر", example: "Illalla menen lenkille." },
+    { finnish: "ilman", english: "Without / بدون", example: "Haluan kahvin ilman maitoa." },
+    { finnish: "joogata", english: "To Do Yoga / یوگا کردن", example: "Joogaan aamuisin." },
+    { finnish: "juhlia", english: "To Celebrate / جشن گرفتن", example: "Me juhlimme syntymäpäivää." },
+    { finnish: "juttu", english: "Story / داستان", example: "Kerro hauska juttu!" },
+    { finnish: "kalastaa", english: "To Fish / ماهیگیری کردن", example: "Haluamme kalastaa järvellä." },
+    { finnish: "katutaso", english: "Street Level / طبقه همکف", example: "Kahvila on katutasossa." },
+    { finnish: "kesä", english: "Summer / تابستان", example: "Kesä on lämmin vuodenaika." },
+    { finnish: "ketsuppi", english: "Ketchup / سس گوجه‌فرنگی", example: "Laitan ketsuppia hampurilaiseen." },
+    { finnish: "kevät", english: "Spring / بهار", example: "Kevät alkaa maaliskuussa." },
+    { finnish: "koko", english: "Size / اندازه", example: "Mikä on sinun kengän koko?" },
+    { finnish: "kotimaa", english: "Homeland / وطن", example: "Suomi on minun kotimaa." },
+    { finnish: "kumisaappaat", english: "Rubber Boots / چکمه‌های لاستیکی", example: "Puen kumisaappaat sateella." },
+    { finnish: "kurahousut", english: "Waterproof Pants / شلوار ضدآب", example: "Lapsi pukee kurahousut ulkoleikkiin." },
+    { finnish: "kutoa", english: "To Knit / بافتن", example: "Mummo kutoo villasukat." },
+    { finnish: "lahja", english: "Gift / هدیه", example: "Annoin lahjan ystävälle." },
+    { finnish: "lapaset", english: "Mittens / دستکش‌های بدون انگشت", example: "Tarvitsen lapaset talvella." },
+    { finnish: "Lappi", english: "Lapland / لاپلند", example: "Lappi on pohjoisessa Suomessa." },
+    { finnish: "laskea", english: "To Go Down / پایین آمدن", example: "Aurinko alkaa laskea illalla." },
+    { finnish: "lempinimi", english: "Nickname / لقب", example: "Minun lempinimi on Kati." },
+    { finnish: "liika", english: "Too Much / زیادی", example: "Tässä ruoassa on liikaa suolaa." },
+    { finnish: "likainen", english: "Dirty / کثیف", example: "Paita on likainen." },
+    { finnish: "lista", english: "List / فهرست", example: "Kirjoitan ostoslistan." },
+    { finnish: "loppua", english: "To End / تمام شدن", example: "Elokuva loppuu pian." },
+    { finnish: "lumi", english: "Snow / برف", example: "Ulkona on paljon lunta." },
+    { finnish: "lumilautailla", english: "To Snowboard / اسنوبورد کردن", example: "Talvella lumilautailen rinteessä." },
+    { finnish: "luotto", english: "Credit / اعتبار", example: "Minulla on hyvä luotto pankissa." },
+    { finnish: "luulla", english: "To Think / فکر کردن", example: "Luulen, että sataa kohta." },
+    { finnish: "lähellä", english: "Near / نزدیک", example: "Kauppa on lähellä kotia." },
+    { finnish: "lähimaksu", english: "Contactless Payment / پرداخت بدون تماس", example: "Käytän lähimaksua kassalla." },
+    { finnish: "lämpömittari", english: "Thermometer / دماسنج", example: "Lämpömittari näyttää -5°." },
+    { finnish: "löytää", english: "To Find / پیدا کردن", example: "Löysin kadonneen avaimen." },
+    { finnish: "mansikka", english: "Strawberry / توت‌فرنگی", example: "Mansikka on herkullinen marja." },
+    { finnish: "matkustaa", english: "To Travel / سفر کردن", example: "Haluan matkustaa Eurooppaan." },
+    { finnish: "muoti", english: "Fashion / مد", example: "Muoti muuttuu joka vuosi." },
+    { finnish: "määrä", english: "Quantity / مقدار", example: "Mikä on oikea määrä?" },
+    { finnish: "mökki", english: "Cottage / کلبه", example: "Meillä on mökki järven rannalla." },
+    { finnish: "näyttää", english: "To Show / نشان دادن", example: "Voitko näyttää tietä?" },
+    { finnish: "ohjelma", english: "Program / برنامه", example: "Katson suosikkiohjelmaani." },
+    { finnish: "ommella", english: "To Sew / دوختن", example: "Ompelen vaatetta itse." },
+    { finnish: "ottaa aurinkoa", english: "To Sunbathe / آفتاب گرفتن", example: "Rannalla voi ottaa aurinkoa." },
+    { finnish: "paistaa", english: "To Shine / تابیدن", example: "Aurinko paistaa kirkkaasti." },
+    { finnish: "paita", english: "Shirt / پیراهن", example: "Pue lämmin paita päälle." },
+    { finnish: "pakkanen", english: "Frost / یخبندان", example: "Ulkona on kova pakkanen." },
+    { finnish: "pankki", english: "Bank / بانک", example: "Menen pankkiin tallettamaan." },
+    { finnish: "peili", english: "Mirror / آینه", example: "Katson peiliin aamulla." },
+    { finnish: "pimeä", english: "Dark / تاریک", example: "Talvella on usein pimeää." },
+    { finnish: "pipo", english: "Beanie / کلاه بافتنی", example: "Pue pipo päähän." },
+    { finnish: "pudota", english: "To Fall / افتادن", example: "Lehti putoaa puusta." },
+    { finnish: "pukea päälle", english: "To Dress / پوشیدن", example: "Pukea päälle ennen ulosmenoa." },
+    { finnish: "pusero", english: "Blouse / بلوز", example: "Pidän tästä puserosta." },
+    { finnish: "puu", english: "Tree / درخت", example: "Pihalla kasvaa iso puu." },
+    { finnish: "puutarha", english: "Garden / باغ", example: "Minä hoidan puutarhaa kesällä." },
+    { finnish: "päällä", english: "On Top / روی", example: "Kirja on pöydän päällä." },
+    { finnish: "renkaat", english: "Tires / لاستیک‌ها", example: "Vaihdan autoon talvirenkaat." },
+    { finnish: "saappaat", english: "Boots / چکمه‌ها", example: "Saappaat pitävät jalat kuivina." },
+    { finnish: "sataa", english: "To Rain / باریدن", example: "Ulkona sataa vettä." },
+    { finnish: "seisoa", english: "To Stand / ایستادن", example: "Seison bussipysäkillä." },
+    { finnish: "sopia", english: "To Fit / مناسب بودن", example: "Tämä paita sopii sinulle." },
+    { finnish: "sopiva", english: "Suitable / مناسب", example: "Koko on sopiva." },
+    { finnish: "sormikkaat", english: "Gloves / دستکش‌ها", example: "Puen sormikkaat ulos mennessä." },
+    { finnish: "sovittaa", english: "To Try On / امتحان کردن", example: "Sovitan takkia." },
+    { finnish: "sovituskoppi", english: "Fitting Room / اتاق پرو", example: "Vaatteet voi sovittaa sovituskopissa." },
+    { finnish: "syksy", english: "Autumn / پاییز", example: "Syksy on värikäs vuodenaika." },
+    { finnish: "sää", english: "Weather / هوا", example: "Sää muuttuu nopeasti." },
+    { finnish: "säästää", english: "To Save / صرفه‌جویی کردن", example: "Haluan säästää rahaa." },
+    { finnish: "takana", english: "Behind / پشت", example: "Auto on talon takana." },
+    { finnish: "takki", english: "Jacket / کت", example: "Tarvitsen lämpimän takin." },
+    { finnish: "talvi", english: "Winter / زمستان", example: "Talvi on kylmä vuodenaika." },
+    { finnish: "talvitakki", english: "Winter Coat / کت زمستانی", example: "Laita talvitakki päälle." },
+    { finnish: "tekstata", english: "To Text / پیامک فرستادن", example: "Tekstaan kaverille illalla." },
+    { finnish: "tilaus", english: "Order / سفارش", example: "Tein tilauksen netissä." },
+    { finnish: "tuote", english: "Product / محصول", example: "Tämä tuote on halpa." },
+    { finnish: "t-paita", english: "T-Shirt / تی‌شرت", example: "Kesällä käytän t-paitaa." },
+    { finnish: "tuuli", english: "Wind / باد", example: "Tuuli puhaltaa kovaa." },
+    { finnish: "tuulla", english: "To Blow / وزیدن", example: "Ulkona tuulee paljon." },
+    { finnish: "ukkonen", english: "Thunder / رعد و برق", example: "Kuulen ukkosen jyrinää." },
+    { finnish: "vaikka", english: "Even Though / اگرچه", example: "Menen ulos, vaikka sataa." },
+    { finnish: "valita", english: "To Choose / انتخاب کردن", example: "Valitsen sinisen takin." },
+    { finnish: "valoisa", english: "Bright / روشن", example: "Huone on valoisa aamulla." },
+    { finnish: "varasto", english: "Storage / انبار", example: "Pyörä on varastossa." },
+    { finnish: "vastakohta", english: "Opposite / متضاد", example: "Pimeä on valon vastakohta." },
+    { finnish: "vieressä", english: "Beside / کنار", example: "Istu minun vieressäni." },
+    { finnish: "villapaita", english: "Sweater / پلیور", example: "Villapaita pitää lämpimänä." },
+    { finnish: "vuodenajat", english: "Seasons / فصول", example: "Suomessa on neljä vuodenajat." },
+    { finnish: "ylhäällä", english: "Upstairs / بالا", example: "Hän asuu ylhäällä toisessa kerroksessa." }
+],
+      "Chapter 7": [
+    { finnish: "aikataulu", english: "Schedule / برنامه زمانی", example: "Tarkista aikataulu etukäteen." },
+    { finnish: "alennus", english: "Discount / تخفیف", example: "Sain alennuksen ostoksesta." },
+    { finnish: "arvo", english: "Value / ارزش", example: "Tämän kolikon arvo on korkea." },
+    { finnish: "asema", english: "Station / ایستگاه", example: "Tapaan sinut asemalla." },
+    { finnish: "automaatti", english: "Machine / دستگاه خودکار", example: "Ostan lipun automaatista." },
+    { finnish: "bensa", english: "Gasoline / بنزین", example: "Tarvitsen lisää bensaa autoon." },
+    { finnish: "bändi", english: "Band / گروه موسیقی", example: "Bändi soittaa rockia." },
+    { finnish: "edullinen", english: "Affordable / مقرون‌به‌صرفه", example: "Tämä takki on edullinen." },
+    { finnish: "eläkeläinen", english: "Retiree / بازنشسته", example: "Eläkeläinen saa alennusta lipusta." },
+    { finnish: "etelä", english: "South / جنوب", example: "Suomen etelä on leudompi." },
+    { finnish: "hangata", english: "To Rub / ساییدن", example: "Hangaan lattiaa puhtaaksi." },
+    { finnish: "harjoitella", english: "To Practice / تمرین کردن", example: "Minun pitää harjoitella pianonsoittoa." },
+    { finnish: "harvoin", english: "Rarely / به‌ندرت", example: "Käyn elokuvissa harvoin." },
+    { finnish: "helppo", english: "Easy / آسان", example: "Tämä testi on helppo." },
+    { finnish: "hidas", english: "Slow / کند", example: "Internet-yhteys on hidas." },
+    { finnish: "hurja", english: "Wild / وحشی", example: "Se oli hurja seikkailu." },
+    { finnish: "ilmoittaa", english: "To Announce / اعلام کردن", example: "Ilmoitan tulokset huomenna." },
+    { finnish: "iltapäivä", english: "Afternoon / بعدازظهر", example: "Iltapäivä on aurinkoinen." },
+    { finnish: "itä", english: "East / شرق", example: "Aurinko nousee idästä." },
+    { finnish: "joki", english: "River / رودخانه", example: "Joki virtaa kaupungin läpi." },
+    { finnish: "joulupukki", english: "Santa Claus / بابانوئل", example: "Lapset odottavat joulupukkia." },
+    { finnish: "jumppa", english: "Gymnastics / ورزش", example: "Minulla on jumppatunti tänään." },
+    { finnish: "juna", english: "Train / قطار", example: "Juna lähtee kohta." },
+    { finnish: "junalippu", english: "Train Ticket / بلیط قطار", example: "Ostin junalipun verkosta." },
+    { finnish: "järjestää", english: "To Organize / سازماندهی کردن", example: "Haluan järjestää juhlat." },
+    { finnish: "jäädä", english: "To Stay / ماندن", example: "Jään kotiin tänään." },
+    { finnish: "kalenteri", english: "Calendar / تقویم", example: "Katson päivän kalenterista." },
+    { finnish: "kartta", english: "Map / نقشه", example: "Tarvitsen kartan reitille." },
+    { finnish: "kauas", english: "Far / دور", example: "Hän asuu kauas täältä." },
+    { finnish: "kausi", english: "Season / فصل", example: "Jääkiekon kausi alkaa syksyllä." },
+    { finnish: "kertalippu", english: "Single Ticket / بلیط یک‌طرفه", example: "Ostan kertalipun bussiin." },
+    { finnish: "kiinnostaa", english: "To Interest / علاقه‌مند کردن", example: "Urheilu kiinnostaa monia." },
+    { finnish: "kokoinen", english: "Sized / به اندازه", example: "Pipo on sopivan kokoinen." },
+    { finnish: "konduktööri", english: "Conductor / راهبر قطار", example: "Konduktööri tarkistaa liput." },
+    { finnish: "koski", english: "Rapids / آبشار", example: "Koski kuohuu voimakkaasti." },
+    { finnish: "kulkea", english: "To Travel / عبور کردن", example: "Bussi kulkee tasatunnein." },
+    { finnish: "kulkuneuvo", english: "Vehicle / وسیله نقلیه", example: "Auto on suosittu kulkuneuvo." },
+    { finnish: "kurssi", english: "Course / دوره", example: "Aloitan uuden kurssin pian." },
+    { finnish: "kylään", english: "To The Village / به روستا", example: "Aion mennä kylään viikonloppuna." },
+    { finnish: "kyyti", english: "Ride / سواری", example: "Sain kyydin ystävältä." },
+    { finnish: "käytetty", english: "Used / استفاده‌شده", example: "Tämä puhelin on käytetty." },
+    { finnish: "ladata", english: "To Load / بارگیری کردن", example: "Lataan puhelimen akun." },
+    { finnish: "laiva", english: "Ship / کشتی", example: "Laiva saapuu satamaan." },
+    { finnish: "lentokenttä", english: "Airport / فرودگاه", example: "Lähden lentokentälle aikaisin." },
+    { finnish: "lentokone", english: "Airplane / هواپیما", example: "Lentokone on nousussa." },
+    { finnish: "lentää", english: "To Fly / پرواز کردن", example: "Haluan lentää lomakohteeseen." },
+    { finnish: "linna", english: "Castle / قلعه", example: "Käymme vanhassa linnassa." },
+    { finnish: "lippu", english: "Ticket / بلیط", example: "Tarvitsen lipun konserttiin." },
+    { finnish: "lipunmyynti", english: "Ticket Sales / فروش بلیط", example: "Lipunmyynti on auki arkisin." },
+    { finnish: "lähtö", english: "Departure / عزیمت", example: "Lähtö on kello kaksi." },
+    { finnish: "länsi", english: "West / غرب", example: "Aurinko laskee länteen." },
+    { finnish: "matkakortti", english: "Travel Card / کارت سفر", example: "Matkakortti on voimassa kuukauden." },
+    { finnish: "matkalaukku", english: "Suitcase / چمدان", example: "Pakkaan vaatteet matkalaukkuun." },
+    { finnish: "matkustaja", english: "Passenger / مسافر", example: "Matkustaja kysyy neuvoa." },
+    { finnish: "meno", english: "Outbound / رفتن", example: "Meno on perjantaina." },
+    { finnish: "menopaluu", english: "Round Trip / رفت و برگشت", example: "Ostan menopaluu-lipun." },
+    { finnish: "meri", english: "Sea / دریا", example: "Meri on tyyni tänään." },
+    { finnish: "mäki", english: "Hill / تپه", example: "Kiipesimme jyrkkää mäkeä." },
+    { finnish: "palata", english: "To Return / بازگشتن", example: "Palaan kotiin illalla." },
+    { finnish: "paluu", english: "Return / بازگشت", example: "Paluu on sunnuntaina." },
+    { finnish: "palvelutalo", english: "Service Home / خانه خدمات", example: "Isoäitini asuu palvelutalossa." },
+    { finnish: "panna", english: "To Put / قرار دادن", example: "Panna kirja hyllyyn." },
+    { finnish: "passi", english: "Passport / گذرنامه", example: "Ota passi mukaan matkalle." },
+    { finnish: "pelätä", english: "To Fear / ترسیدن", example: "En pelkää korkeita paikkoja." },
+    { finnish: "perillä", english: "At Destination / در مقصد", example: "Olemme perillä tunnissa." },
+    { finnish: "pohjoinen", english: "North / شمال", example: "Suomen pohjoinen on Lapissa." },
+    { finnish: "puisto", english: "Park / پارک", example: "Kävelen puistossa aamuisin." },
+    { finnish: "pukuhuone", english: "Changing Room / رختکن", example: "Jätin takin pukuhuoneeseen." },
+    { finnish: "puuttua", english: "To Be Missing / کمبود داشتن", example: "Yksi osa puuttuu paketista." },
+    { finnish: "pyytää", english: "To Request / درخواست کردن", example: "Haluan pyytää palvelusta." },
+    { finnish: "pääkaupunki", english: "Capital / پایتخت", example: "Helsinki on Suomen pääkaupunki." },
+    { finnish: "päästä", english: "To Get (Somewhere) / رسیدن", example: "Haluan päästä asemalle ajoissa." },
+    { finnish: "raide", english: "Track / ریل", example: "Juna saapuu raiteelle kolme." },
+    { finnish: "raja", english: "Border / مرز", example: "Suomi jakaa rajan Ruotsin kanssa." },
+    { finnish: "rakennusmies", english: "Construction Worker / کارگر ساختمانی", example: "Rakennusmies tekee pitkää päivää." },
+    { finnish: "rakentaa", english: "To Build / ساختن", example: "He rakentavat uutta tietä." },
+    { finnish: "ranta", english: "Beach / ساحل", example: "Menen rannalle kesällä." },
+    { finnish: "rautatieasema", english: "Railway Station / ایستگاه راه‌آهن", example: "Tapaan sinut rautatieasemalla." },
+    { finnish: "ravintolavaunu", english: "Restaurant Car / واگن رستوران", example: "Junassa on ravintolavaunu." },
+    { finnish: "reppu", english: "Backpack / کوله‌پشتی", example: "Laitan kirjat reppuun." },
+    { finnish: "saapua", english: "To Arrive / رسیدن", example: "Bussi saapuu pian." },
+    { finnish: "sadetakki", english: "Raincoat / بارانی", example: "Puen sadetakin sadesäällä." },
+    { finnish: "sanakirja", english: "Dictionary / فرهنگ لغت", example: "Katson uudet sanat sanakirjasta." },
+    { finnish: "seura", english: "Association / انجمن", example: "Liityin urheiluseuraan." },
+    { finnish: "tanssia", english: "To Dance / رقصیدن", example: "Haluan tanssia musiikin tahtiin." },
+    { finnish: "tarkastus", english: "Inspection / بازرسی", example: "Tarkastus on tänään." },
+    { finnish: "tavallisesti", english: "Usually / معمولاً", example: "Tavallisesti herään aikaisin." },
+    { finnish: "tieto", english: "Information / اطلاعات", example: "Tarvitsen lisätietoa kurssista." },
+    { finnish: "toimia", english: "To Function / عمل کردن", example: "Tietokone toimii hyvin." },
+    { finnish: "torni", english: "Tower / برج", example: "Torni näkyy kauas." },
+    { finnish: "tulla", english: "To Come / آمدن", example: "Tulen asemalle ajoissa." },
+    { finnish: "täytyä", english: "Must / باید", example: "Minun täytyy siivota." },
+    { finnish: "uimahalli", english: "Indoor Swimming Pool / استخر سرپوشیده", example: "Käyn uimahallissa torstaisin." },
+    { finnish: "valmis", english: "Ready / آماده", example: "Olen valmis lähtöön." },
+    { finnish: "verrata", english: "To Compare / مقایسه کردن", example: "Voimme verrata hintoja ensin." },
+    { finnish: "vuorokausi", english: "24 Hours / شبانه‌روز", example: "Vuorokaudessa on 24 tuntia." }
+    ],
+      "Chapter 8": [        
+        { finnish: "aiheuttaa", english: "To Cause / ایجاد کردن", example: "Tämä voi aiheuttaa allergiaa." },
+        { finnish: "aine", english: "Substance / ماده", example: "Tämä aine on vaarallinen." },
+        { finnish: "aivastaa", english: "To Sneeze / عطسه کردن", example: "Kun olen flunssassa, aivastan paljon." },
+        { finnish: "ajankohta", english: "Time Period / بازه زمانی", example: "Tämä on sopiva ajankohta lääkärille." },
+        { finnish: "ajanvaraus", english: "Appointment Booking / وقت گرفتن", example: "Teen ajanvarauksen huomiseksi." },
+        { finnish: "aski", english: "Pack / بسته", example: "Ostin aski purukumia." },
+        { finnish: "assistentti", english: "Assistant / دستیار", example: "Lääkärin assistentti auttaa vastaanotolla." },
+        { finnish: "ehtiä", english: "To Have Time / فرصت داشتن", example: "Ehdin lääkäriin ennen sulkemista." },
+        { finnish: "erikseen", english: "Separately / به طور جداگانه", example: "Ota lääkkeet erikseen vedellä." },
+        { finnish: "eteenpäin", english: "Forward / به جلو", example: "Jatka eteenpäin käytävää pitkin." },
+        { finnish: "flunssa", english: "Flu / آنفولانزا", example: "Minulla on flunssa ja kuumetta." },
+        { finnish: "haava", english: "Wound / زخم", example: "Puhdistan haavan antiseptillä." },
+        { finnish: "helpottaa", english: "To Relieve / تسکین دادن", example: "Särkylääke helpottaa kipua." },
+        { finnish: "henki", english: "Breath / نفس", example: "Vedä syvään henkeä." },
+        { finnish: "hernekeitto", english: "Pea Soup / سوپ نخودفرنگی", example: "Torstaisin syömme hernekeittoa." },
+        { finnish: "heti", english: "Immediately / بلافاصله", example: "Tule heti vastaanotolle." },
+        { finnish: "hiki", english: "Sweat / عرق", example: "Hikoilen paljon urheillessa." },
+        { finnish: "huoltaja", english: "Guardian / سرپرست", example: "Lapsella on huoltaja mukana." },
+        { finnish: "huono olo", english: "Feeling Unwell / حال بد", example: "Minulla on huono olo." },
+        { finnish: "hygienia", english: "Hygiene / بهداشت", example: "Hyvä hygienia ehkäisee sairauksia." },
+        { finnish: "hyönteinen", english: "Insect / حشره", example: "Hyönteisen pisto voi olla vaarallinen." },
+        { finnish: "hätä", english: "Emergency / اضطرار", example: "Soita hätänumeroon hätätilanteessa." },
+        { finnish: "hätänumero", english: "Emergency Number / شماره اضطراری", example: "Hätänumero Suomessa on 112." },
+        { finnish: "hätätapaus", english: "Emergency Case / مورد اضطراری", example: "Lääkäri hoitaa hätätapaukset ensin." },
+        { finnish: "ilmoittautua", english: "To Register / ثبت نام کردن", example: "Ilmoittauduin terveystarkastukseen." },
+        { finnish: "info", english: "Information / اطلاعات", example: "Saan infoa lääkäriltä." },
+        { finnish: "IT-tuki", english: "IT Support / پشتیبانی IT", example: "Tarvitsen IT-tukea rekisteröitymiseen." },
+        { finnish: "jaksaa", english: "To Have Energy / توان داشتن", example: "En jaksa nousta ylös." },
+        { finnish: "jalka", english: "Leg / پا", example: "Jalkani on kipeä." },
+        { finnish: "jano", english: "Thirst / تشنگی", example: "Minulla on jano, tarvitsen vettä." },
+        { finnish: "jatkua", english: "To Continue / ادامه دادن", example: "Flunssa voi jatkua viikon." },
+        { finnish: "joka", english: "Every / هر", example: "Otan lääkkeen joka aamu." },
+        { finnish: "jonottaa", english: "To Queue / در صف ایستادن", example: "Jonotan lääkäriin pitkään." },
+        { finnish: "juotava", english: "Drinkable / نوشیدنی", example: "Tämä vesi on juotavaa." },
+        { finnish: "jää", english: "Ice / یخ", example: "Laitan jäätä nilkkaan." },
+        { finnish: "jääpala", english: "Ice Cube / تکه یخ", example: "Laitan jääpalan juomaan." },
+        { finnish: "kaatua", english: "To Fall / افتادن", example: "Kaatui ja satutti polvensa." },
+        { finnish: "kalpea", english: "Pale / رنگ پریده", example: "Olet tänään hyvin kalpea." },
+        { finnish: "kiireellinen", english: "Urgent / فوری", example: "Tämä tapaus on kiireellinen." },
+        { finnish: "kipeä", english: "Painful / دردناک", example: "Kurkkuni on kipeä." },
+        { finnish: "kipu", english: "Pain / درد", example: "Tunnen kipua selässä." },
+        { finnish: "kohta", english: "Soon / به زودی", example: "Lääkäri tulee kohta." },
+        { finnish: "korkea", english: "High / بالا", example: "Minulla on korkea kuume." },
+        { finnish: "koskea", english: "To Touch / لمس کردن", example: "Älä koske haavaan." },
+        { finnish: "kova", english: "Hard / سخت", example: "Tämä sänky on liian kova." },
+        { finnish: "kuljettaa", english: "To Transport / حمل کردن", example: "Ambulanssi kuljettaa potilaan." },
+        { finnish: "kurkku", english: "Throat / گلو", example: "Kurkkuni on tulehtunut." },
+        { finnish: "kurkkukipu", english: "Sore Throat / گلودرد", example: "Minulla on kurkkukipu." },
+        { finnish: "kuulla", english: "To Hear / شنیدن", example: "En kuule hyvin vasemmalla korvalla." },
+        { finnish: "kuume", english: "Fever / تب", example: "Minulla on korkea kuume." },
+        { finnish: "kylki", english: "Side / پهلو", example: "Kylkeni sattuu juostessa." },
+        { finnish: "kärsivällinen", english: "Patient / صبور", example: "Ole kärsivällinen odottaessasi." },
+        { finnish: "käsi", english: "Hand / دست", example: "Käteni on murtunut." },
+        { finnish: "käytävä", english: "Hallway / راهرو", example: "Käytävä on pitkä ja kapea." },
+        { finnish: "laastari", english: "Bandage / چسب زخم", example: "Laitan laastarin sormeen." },
+        { finnish: "lepo", english: "Rest / استراحت", example: "Tarvitsen lepoa paranemiseen." },
+        { finnish: "levätä", english: "To Rest / استراحت کردن", example: "Levään sängyssä koko päivän." },
+        { finnish: "lihast", english: "Muscle / عضله", example: "Lihakseni ovat kipeät harjoituksen jälkeen." },
+        { finnish: "liittyä", english: "To Join / پیوستن", example: "Liityin kuntosalille eilen." },
+        { finnish: "lisätieto", english: "Additional Information / اطلاعات اضافی", example: "Saat lisätietoa nettisivuilta." },
+        { finnish: "lounasaika", english: "Lunch Time / زمان ناهار", example: "Lounasaika alkaa klo 12." },
+        { finnish: "lumityöt", english: "Snow Work / برف‌روبی", example: "Teen lumitöitä pihalla." },
+        { finnish: "luvat", english: "Permissions / مجوزها", example: "Minulla on kaikki tarvittavat luvat." },
+        { finnish: "lyhyesti", english: "Briefly / به طور خلاصه", example: "Selitä asia lyhyesti." },
+        { finnish: "lähete", english: "Referral / معرفی‌نامه", example: "Sain lääkäriltä lähetteen tutkittavaksi." },
+        { finnish: "lääke", english: "Medicine / دارو", example: "Otan lääkkeen ennen nukkumaanmenoa." },
+        { finnish: "lääkitys", english: "Medication / درمان دارویی", example: "Lääkitys auttaa oireisiin." },
+        { finnish: "lääkäri", english: "Doctor / پزشک", example: "Minun pitää mennä lääkäriin." },
+        { finnish: "maata", english: "To Lie Down / دراز کشیدن", example: "Makaatko sohvalla?" },
+        { finnish: "maha / vatsa", english: "Stomach / معده", example: "Vatsani on kipeä." },
+        { finnish: "mukaan", english: "Along / همراه", example: "Ota tämä lääke mukaasi." },
+        { finnish: "myöhemmin", english: "Later / بعداً", example: "Puhutaan asiasta myöhemmin." },
+        { finnish: "nenä", english: "Nose / بینی", example: "Minulla on tukkoinen nenä." },
+        { finnish: "neuvo", english: "Advice / مشاوره", example: "Lääkäri antoi hyvän neuvon." },
+        { finnish: "neuvoa", english: "To Advise / راهنمایی کردن", example: "Neuvon sinua tässä asiassa." },
+        { finnish: "niistää", english: "To Blow One’s Nose / فین کردن", example: "Niistän nenän ennen lähtöä." },
+        { finnish: "nilkka", english: "Ankle / مچ پا", example: "Nilkkani on venähtänyt." },
+        { finnish: "niska", english: "Neck / گردن", example: "Niskani on kipeä työstä." },
+        { finnish: "nopeasti", english: "Quickly / به سرعت", example: "Paranen nopeasti levon avulla." },
+        { finnish: "normaali", english: "Normal / عادی", example: "Tämä oire on täysin normaali." },
+        { finnish: "nostaa", english: "To Lift / بلند کردن", example: "Nostan painavan laukun." },
+        { finnish: "nuha", english: "Runny Nose / آبریزش بینی", example: "Minulla on paha nuha." },
+        { finnish: "nuori", english: "Young / جوان", example: "Nuoret tarvitsevat paljon liikuntaa." },
+        { finnish: "nälkä", english: "Hunger / گرسنگی", example: "Minulla on kova nälkä." },
+        { finnish: "närästys", english: "Heartburn / سوزش سر دل", example: "Närästys pahenee illalla." },
+        { finnish: "ohi", english: "Over / تمام شده", example: "Flunssani on vihdoin ohi." },
+        { finnish: "ohje", english: "Instruction / دستورالعمل", example: "Lääkäri antoi ohjeet parantumiseen." },
+        { finnish: "oire", english: "Symptom / علامت بیماری", example: "Kuume on yleinen oire." },
+        { finnish: "oksennus", english: "Vomit / استفراغ", example: "Oksennus johtui myrkytyksestä." },
+        { finnish: "oksentaa", english: "To Vomit / استفراغ کردن", example: "Hän oksentaa koko ajan." },
+        { finnish: "olo", english: "Condition / وضعیت", example: "Minun olo on parempi tänään." },
+        { finnish: "ottaa", english: "To Take / گرفتن", example: "Otan lääkkeen aamulla." },
+        { finnish: "pakastepussi", english: "Frozen Bag / کیسه یخ زده", example: "Käytän pakastepussia kylmänä kompressiona." },
+        { finnish: "palvelu", english: "Service / خدمات", example: "Terveyspalvelut ovat ilmaisia." },
+        { finnish: "peruuttaa", english: "To Cancel / لغو کردن", example: "Peruutan lääkäriajan." },
+        { finnish: "peruutusaika", english: "Cancellation Time / زمان لغو", example: "Peruutusaika on 24 tuntia ennen." },
+        { finnish: "pistää", english: "To Inject / تزریق کردن", example: "Lääkäri pistää rokotteen." },
+        { finnish: "poissa", english: "Absent / غایب", example: "Olen poissa töistä sairauden takia." },
+        { finnish: "polvi", english: "Knee / زانو", example: "Polveni on turvonnut." },
+        { finnish: "portaat", english: "Stairs / پله‌ها", example: "Nousen portaita hitaasti." },
+        { finnish: "potilas", english: "Patient / بیمار", example: "Lääkäri hoitaa potilaita." },
+        { finnish: "puhdistaa", english: "To Clean / تمیز کردن", example: "Puhdistan haavan vedellä." },
+        { finnish: "pää", english: "Head / سر", example: "Pääni sattuu tänään." },
+        { finnish: "päästä", english: "To Get / رسیدن", example: "Haluan päästä lääkäriin nopeasti." },
+        { finnish: "rakennus", english: "Building / ساختمان", example: "Terveyskeskus on iso rakennus." },
+        { finnish: "rasvainen", english: "Fatty / چرب", example: "Vältän rasvaisia ruokia." },
+        { finnish: "resepti", english: "Prescription / نسخه", example: "Lääkäri kirjoitti minulle reseptin." },
+        { finnish: "riittävästi", english: "Enough / به اندازه کافی", example: "Juo riittävästi vettä." },
+        { finnish: "ripuli", english: "Diarrhea / اسهال", example: "Minulla on ripuli koko päivän." },
+        { finnish: "ruumiinosat", english: "Body Parts / قسمت‌های بدن", example: "Opettelemme ruumiinosat koulussa." },
+        { finnish: "saippua", english: "Soap / صابون", example: "Käytä saippuaa käsien pesuun." },
+        { finnish: "sairas", english: "Sick / بیمار", example: "Olen sairas ja jään kotiin." },
+        { finnish: "sairastaa", english: "To Be Sick / بیمار بودن", example: "Hän sairastaa influenssaa." },
+        { finnish: "sairaus", english: "Disease / بیماری", example: "Tämä sairaus on yleinen talvella." },
+        { finnish: "sairausloma", english: "Sick Leave / مرخصی بیماری", example: "Olen sairauslomalla viikon." },
+        { finnish: "sattua", english: "To Hurt / درد داشتن", example: "Polveni sattuu kaatumisen jälkeen." },
+        { finnish: "selkä", english: "Back / پشت", example: "Selkäni on kipeä töiden jälkeen." },
+        { finnish: "selvitys", english: "Report / گزارش", example: "Lääkäri pyysi selvityksen oireista." },
+        { finnish: "selvä", english: "Clear / واضح", example: "Onko kaikki nyt selvä?" },
+        { finnish: "seuraavaksi", english: "Next / بعدی", example: "Seuraavaksi tapaan lääkärin." },
+        { finnish: "sierain", english: "Nostril / سوراخ بینی", example: "Sieraimeni on tukossa." },
+        { finnish: "sisään", english: "Inside / داخل", example: "Mene sisään odotushuoneeseen." },
+        { finnish: "sormi", english: "Finger / انگشت", example: "Sormeni jäi oven väliin." },
+        { finnish: "surullinen", english: "Sad / ناراحت", example: "Olen surullinen sairastumisesta." },
+        { finnish: "suu", english: "Mouth / دهان", example: "Avaa suu lääkärille." },
+        { finnish: "säilyttää", english: "To Store / نگه داشتن", example: "Lääkkeet pitää säilyttää kuivassa." },
+        { finnish: "särky", english: "Ache / درد", example: "Minulla on päänsärky." },
+        { finnish: "särkylääke", english: "Painkiller / مسکن", example: "Otan särkylääkkeen ennen nukkumaanmenoa." },
+        { finnish: "tabletti", english: "Tablet / قرص", example: "Lääkärin määräämä tabletti on tehokas." },
+        { finnish: "taksi", english: "Taxi / تاکسی", example: "Tilaan taksin sairaalaan." },
+        { finnish: "tarkastaa", english: "To Examine / بررسی کردن", example: "Lääkäri tarkastaa potilaan." },
+        { finnish: "tarkistaa", english: "To Check / چک کردن", example: "Tarkistan ajanvarauksen." },
+        { finnish: "tarttua", english: "To Catch / منتقل شدن", example: "Flunssa voi tarttua helposti." },
+        { finnish: "terveydenhoitaja", english: "Nurse / پرستار", example: "Terveydenhoitaja auttaa potilaita." },
+        { finnish: "terveys", english: "Health / سلامتی", example: "Terveys on tärkeä asia." },
+        { finnish: "terveysasema", english: "Health Center / مرکز سلامت", example: "Menen terveysasemalle huomenna." },
+        { finnish: "terveyskeskus", english: "Health Clinic / درمانگاه", example: "Kaupungissa on uusi terveyskeskus." },
+        { finnish: "todistus", english: "Certificate / گواهی", example: "Tarvitsen lääkärintodistuksen." },
+        { finnish: "toimisto", english: "Office / دفتر", example: "Lääkärin toimisto on toisessa kerroksessa." },
+        { finnish: "torjua", english: "To Prevent / پیشگیری کردن", example: "Torjun tartunnan pesemällä kädet." },
+        { finnish: "tulehdus", english: "Inflammation / التهاب", example: "Kurkkuni on tulehtunut." },
+        { finnish: "tulinen", english: "Spicy / تند", example: "Vältän tulista ruokaa vatsavaivojen takia." },
+        { finnish: "tunnustella", english: "To Feel / لمس کردن", example: "Lääkäri tunnustelee vatsaa." },
+        { finnish: "tuntua", english: "To Feel / احساس کردن", example: "Päänsärky tuntuu pahalta." },
+        { finnish: "turvoksissa", english: "Swollen / متورم", example: "Nilkkani on turvoksissa." },
+        { finnish: "tutkia", english: "To Examine / معاینه کردن", example: "Lääkäri tutkii potilaan tarkasti." },
+        { finnish: "työpaikka", english: "Workplace / محل کار", example: "Työpaikallani on hyvä ilmapiiri." },
+        { finnish: "tärkeä", english: "Important / مهم", example: "Terveys on tärkeä asia." },
+        { finnish: "ulkopuolella", english: "Outside / بیرون از", example: "Odota ulkopuolella hetki." },
+        { finnish: "umpisuoli", english: "Appendix / آپاندیس", example: "Hänellä on umpisuolen tulehdus." },
+        { finnish: "vaara", english: "Danger / خطر", example: "Onko tämä lääke vaarallinen?" },
+        { finnish: "vaikea", english: "Difficult / سخت", example: "Tämä sairaus on vaikea hoitaa." },
+        { finnish: "vaiva", english: "Ailment / ناراحتی", example: "Minulla on pieni vaiva jalassa." },
+        { finnish: "valitettavasti", english: "Unfortunately / متأسفانه", example: "Valitettavasti aika on jo varattu." },
+        { finnish: "vapaa", english: "Free / آزاد", example: "Tänään olen vapaa koko päivän." },
+        { finnish: "varmaan", english: "Probably / احتمالا", example: "Hän tulee varmaan huomenna." },
+        { finnish: "vastaanottohuone", english: "Consultation Room / اتاق مشاوره", example: "Odota vastaanottohuoneessa." },
+        { finnish: "vatsa / maha", english: "Stomach / معده", example: "Minulla on vatsakipu." },
+        { finnish: "vatsatauti", english: "Stomach Flu / آنفلوآنزای معده", example: "Vatsatauti leviää nopeasti." },
+        { finnish: "veri", english: "Blood / خون", example: "Näytän verikokeen tulokset." },
+        { finnish: "verikoe", english: "Blood Test / آزمایش خون", example: "Minulle tehtiin verikoe eilen." },
+        { finnish: "vihainen", english: "Angry / عصبانی", example: "Potilas oli vihainen odottaessaan kauan." },
+        { finnish: "voide", english: "Ointment / پماد", example: "Levitä voidetta iholle." },
+        { finnish: "vuotaa", english: "To Bleed / خونریزی کردن", example: "Haava vuotaa paljon verta." },
+        { finnish: "väsyttää", english: "To Feel Tired / خسته شدن", example: "Minua väsyttää tänään paljon." },
+        { finnish: "yleinen", english: "Common / رایج", example: "Flunssa on yleinen talvella." },
+        { finnish: "yskä", english: "Cough / سرفه", example: "Minulla on kova yskä." }
+    ],
+"Colors": [
+    { finnish: "punainen", english: "Red / قرمز", example: "Tämä kukka on punainen." },
+    { finnish: "sininen", english: "Blue / آبی", example: "Taivas on sininen." },
+    { finnish: "keltainen", english: "Yellow / زرد", example: "Keltainen aurinko paistaa." },
+    { finnish: "vihreä", english: "Green / سبز", example: "Puu on vihreä kesällä." },
+    { finnish: "oranssi", english: "Orange / نارنجی", example: "Minulla on oranssi paita." },
+    { finnish: "violetti", english: "Purple / بنفش", example: "Violetti kukka on kaunis." },
+    { finnish: "vaaleanpunainen", english: "Pink / صورتی", example: "Vaaleanpunainen hame on söpö." },
+    { finnish: "ruskea", english: "Brown / قهوه‌ای", example: "Koira on ruskea." },
+    { finnish: "musta", english: "Black / سیاه", example: "Auto on musta." },
+    { finnish: "valkoinen", english: "White / سفید", example: "Lumihiutale on valkoinen." },
+    { finnish: "harmaa", english: "Gray / خاکستری", example: "Kissa on harmaa." },
+    { finnish: "turkoosi", english: "Turquoise / فیروزه‌ای", example: "Minulla on turkoosi pusero." },
+    { finnish: "kultainen", english: "Gold / طلایی", example: "Tämä koru on kultainen." },
+    { finnish: "hopeinen", english: "Silver / نقره‌ای", example: "Hopeinen sormus on kaunis." },
+    { finnish: "vaaleansininen", english: "Light Blue / آبی روشن", example: "Taivas näyttää vaaleansiniseltä." },
+    { finnish: "tummanvihreä", english: "Dark Green / سبز تیره", example: "Takki on tummanvihreä." }
+],
+       "Verbs": [
+    { finnish: "ajaa", english: "To Drive / رانندگی کردن", example: "Ajan autoa joka päivä." },
+    { finnish: "antaa", english: "To Give / دادن", example: "Annatko minulle kirjan?" },
+    { finnish: "asua", english: "To Live / زندگی کردن", example: "Asun Suomessa." },
+    { finnish: "avata", english: "To Open / باز کردن", example: "Avaan oven varovasti." },
+    { finnish: "herätä", english: "To Wake Up / بیدار شدن", example: "Herään aikaisin aamulla." },
+    { finnish: "hiihtää", english: "To Ski / اسکی کردن", example: "Talvella hiihdän joka viikonloppu." },
+    { finnish: "hymyillä", english: "To Smile / لبخند زدن", example: "Hän hymyilee minulle." },
+    { finnish: "häiritä", english: "To Disturb / مزاحم شدن", example: "En halua häiritä sinua." },
+    { finnish: "imuroida", english: "To Vacuum / جاروبرقی کشیدن", example: "Imuroin olohuoneen lattian." },
+    { finnish: "istua", english: "To Sit / نشستن", example: "Istun tuolilla hetken." },
+    { finnish: "itkeä", english: "To Cry / گریه کردن", example: "Lapsi itkee unissaan." },
+    { finnish: "juhlia", english: "To Celebrate / جشن گرفتن", example: "Juhlimme syntymäpäivää tänään." },
+    { finnish: "juoda", english: "To Drink / نوشیدن", example: "Juon kahvia aamulla." },
+    { finnish: "juosta", english: "To Run / دویدن", example: "Juoksen puistossa iltaisin." },
+    { finnish: "katsoa", english: "To Watch / نگاه کردن", example: "Katson elokuvaa kotona." },
+    { finnish: "keskustella", english: "To Discuss / بحث کردن", example: "Keskustelemme säästä." },
+    { finnish: "kirjoittaa", english: "To Write / نوشتن", example: "Kirjoitan kirjeen ystävälle." },
+    { finnish: "korjata", english: "To Fix / تعمیر کردن", example: "Korjaan polkupyörän itse." },
+    { finnish: "kävellä", english: "To Walk / راه رفتن", example: "Kävelen kouluun joka aamu." },
+    { finnish: "laulaa", english: "To Sing / آواز خواندن", example: "Laulan suihkussa." },
+    { finnish: "lentää", english: "To Fly / پرواز کردن", example: "Lentokone lentää korkealla." },
+    { finnish: "luistella", english: "To Skate / اسکیت کردن", example: "Luistelen jäällä talvella." },
+    { finnish: "lukea", english: "To Read / خواندن", example: "Luen kirjaa illalla." },
+    { finnish: "lähteä", english: "To Leave / ترک کردن", example: "Lähden kotoa kahdeksalta." },
+    { finnish: "maksaa", english: "To Pay / پرداخت کردن", example: "Maksan ostokset kortilla." },
+    { finnish: "matkustaa", english: "To Travel / سفر کردن", example: "Matkustan lomalle kesällä." },
+    { finnish: "mennä", english: "To Go / رفتن", example: "Menen kauppaan nyt." },
+    { finnish: "myydä", english: "To Sell / فروختن", example: "Myyn vanhat vaatteet netissä." },
+    { finnish: "nauraa", english: "To Laugh / خندیدن", example: "Nauramme yhdessä." },
+    { finnish: "nousta", english: "To Get Up / بلند شدن", example: "Nousen tuolilta hitaasti." },
+    { finnish: "nukkua", english: "To Sleep / خوابیدن", example: "Nukun kahdeksan tuntia yössä." },
+    { finnish: "opiskella", english: "To Study / تحصیل کردن", example: "Opiskelen suomea yliopistossa." },
+    { finnish: "ostaa", english: "To Buy / خریدن", example: "Ostan leipää kaupasta." },
+    { finnish: "ottaa", english: "To Take / گرفتن", example: "Otan kuvan maisemasta." },
+    { finnish: "pelata", english: "To Play (a Game) / بازی کردن", example: "Pelaan jalkapalloa ystävien kanssa." },
+    { finnish: "pestä", english: "To Wash / شستن", example: "Pesen kädet ennen ruokaa." },
+    { finnish: "piirtää", english: "To Draw / نقاشی کشیدن", example: "Piirrän kuvan luonnosta." },
+    { finnish: "polttaa", english: "To Smoke / سیگار کشیدن", example: "Älä polta sisällä." },
+    { finnish: "puhua", english: "To Speak / صحبت کردن", example: "Puhun suomea vähän." },
+    { finnish: "pukea", english: "To Dress / پوشیدن", example: "Puen takin päälle." },
+    { finnish: "pyöräillä", english: "To Cycle / دوچرخه‌سواری کردن", example: "Pyöräilen kouluun kesällä." },
+    { finnish: "rakastaa", english: "To Love / دوست داشتن", example: "Rakastan perhettäni." },
+    { finnish: "sanoa", english: "To Say / گفتن", example: "Sano se uudestaan, ole hyvä." },
+    { finnish: "saunoa", english: "To Go To Sauna / سونا رفتن", example: "Saunomme joka lauantai." },
+    { finnish: "seisoa", english: "To Stand / ایستادن", example: "Seison jonossa kaupassa." },
+    { finnish: "siivota", english: "To Clean / تمیز کردن", example: "Siivoan huoneen tänään." },
+    { finnish: "soida", english: "To Ring / به صدا درآمدن", example: "Puhelin soi yöllä." },
+    { finnish: "soittaa", english: "To Play (Music)/To Call / نواختن (موسیقی) / تماس گرفتن", example: "Soitan kitaraa joka ilta." },
+    { finnish: "syödä", english: "To Eat / خوردن", example: "Syön lounasta ravintolassa." },
+    { finnish: "tanssia", english: "To Dance / رقصیدن", example: "Tanssin mielelläni musiikin tahtiin." },
+    { finnish: "tehdä", english: "To Do / انجام دادن", example: "Mitä haluat tehdä tänään?" },
+    { finnish: "tilata", english: "To Order / سفارش دادن", example: "Tilaan ruokaa kotiinkuljetuksella." },
+    { finnish: "tiskata", english: "To Wash Dishes / ظرف شستن", example: "Tiskaan lautaset keittiössä." },
+    { finnish: "tulla", english: "To Come / آمدن", example: "Tulen mukaan retkelle." },
+    { finnish: "uida", english: "To Swim / شنا کردن", example: "Uin järvessä kesällä." },
+    { finnish: "valita", english: "To Choose / انتخاب کردن", example: "Valitsen punaisen mekon." }
+],
+       "Foods": [
+    { finnish: "mustikka", english: "Blueberry / بلوبری", example: "Pidän mustikoista jogurtissa." },
+    { finnish: "puolukka", english: "Lingonberry / قره‌قاط", example: "Puolukka on hieman kirpeää." },
+    { finnish: "vadelma", english: "Raspberry / تمشک", example: "Vadelma on makea marja." },
+    { finnish: "kirsikka", english: "Cherry / گیلاس", example: "Syön kirsikoita kesällä." },
+    { finnish: "lakka", english: "Cloudberry / مور بری زرد", example: "Lakka kasvaa suolla." },
+    { finnish: "viinimarja", english: "Currant / انگور فرنگی", example: "Kerään viinimarjoja pihalta." },
+    { finnish: "mansikka", english: "Strawberry / توت‌فرنگی", example: "Mansikat ovat tuoreita kesällä." },
+    { finnish: "liha", english: "Meat / گوشت", example: "Pidän lihakeitosta." },
+    { finnish: "porsaanliha", english: "Pork Meat / گوشت خوک", example: "Paistan porsaanlihaa pannulla." },
+    { finnish: "naudanliha", english: "Beef / گوشت گاو", example: "Keitän naudanlihapataa." },
+    { finnish: "kana", english: "Chicken / مرغ", example: "Paistan kanaa uunissa." },
+    { finnish: "makkara", english: "Sausage / سوسیس", example: "Grillaan makkaraa kesällä." },
+    { finnish: "kala", english: "Fish / ماهی", example: "Syön kalaa monta kertaa viikossa." },
+    { finnish: "lohi", english: "Salmon / ماهی سالمون", example: "Lohi on herkullista uunissa." },
+    { finnish: "nakki", english: "Hot Dog / هات‌داگ", example: "Syön nakin sinapin kanssa." },
+    { finnish: "katkarapu", english: "Shrimp / میگو", example: "Lisään katkarapuja salaattiin." },
+    { finnish: "riisi", english: "Rice / برنج", example: "Keitän riisin kattilassa." },
+    { finnish: "keitto", english: "Soup / سوپ", example: "Syön keittoa lounaaksi." },
+    { finnish: "salaatti", english: "Salad / سالاد", example: "Salaatti on terveellistä." },
+    { finnish: "makaronilaatikko", english: "Macaroni Casserole / گراتن ماکارونی", example: "Makaronilaatikko on suosittu ruoka." },
+    { finnish: "pasta", english: "Pasta / پاستا", example: "Valmistan pastaa illalliseksi." },
+    { finnish: "hampurilainen", english: "Hamburger / همبرگر", example: "Tilaan hampurilaisen ravintolasta." },
+    { finnish: "pizza", english: "Pizza / پیتزا", example: "Syön pizzaa viikonloppuna." },
+    { finnish: "pihvi", english: "Steak / استیک", example: "Paistan pihvin pannulla." },
+    { finnish: "kastike", english: "Sauce / سس", example: "Kastike antaa makua ruokaan." },
+    { finnish: "vesi", english: "Water / آب", example: "Juon vettä paljon." },
+    { finnish: "maito", english: "Milk / شیر", example: "Lisään maitoa kahviin." },
+    { finnish: "kivennäisvesi (vissy)", english: "Mineral Water (Vichy) / آب گازدار", example: "Juo kivennäisvettä janoon." },
+    { finnish: "kaakao", english: "Cocoa / کاکائو", example: "Juon kuumaa kaakaota." },
+    { finnish: "kahvi", english: "Coffee / قهوه", example: "Tarvitsen kahvia aamulla." },
+    { finnish: "tee", english: "Tea / چای", example: "Juo teetä rauhoittumiseen." },
+    { finnish: "piimä", english: "Buttermilk / دوغ", example: "Piimä maistuu hieman happamalta." },
+    { finnish: "mehu", english: "Juice / آب‌میوه", example: "Pidän appelsiinimehusta." },
+    { finnish: "viini", english: "Wine / شراب", example: "Tarjoilen viiniä illallisella." },
+    { finnish: "kauramaito", english: "Oat Milk / شیر جو دوسر", example: "Käytän kauramaitoa kahvissa." },
+    { finnish: "limu", english: "Soda / نوشابه", example: "Limu on makeaa juomaa." },
+    { finnish: "olut", english: "Beer / آبجو", example: "Juo olutta kohtuudella." },
+    { finnish: "siideri", english: "Cider / سایدر", example: "Pidän makeasta siideristä." },
+    { finnish: "murot", english: "Cereal / غلات صبحانه", example: "Syön muroja aamiaiseksi." },
+    { finnish: "puuro", english: "Porridge / فرنی", example: "Puuro on lämmintä ruokaa." },
+    { finnish: "leipä", english: "Bread / نان", example: "Leipä on tuoretta tänään." },
+    { finnish: "voi", english: "Butter / کره", example: "Levitä voita leivälle." },
+    { finnish: "sämpylä", english: "Bread Roll / نان گرد", example: "Syön sämpylän aamulla." },
+    { finnish: "jogurtti", english: "Yogurt / ماست", example: "Lisään marjoja jogurttiin." },
+    { finnish: "karjalanpiirakka", english: "Karelian Pie / پای کاریلیایی", example: "Karjalanpiirakka on perinneruoka." },
+    { finnish: "muna", english: "Egg / تخم‌مرغ", example: "Keitän munan aamiaiseksi." },
+    { finnish: "hunaja", english: "Honey / عسل", example: "Lisään hunajaa teehen." },
+    { finnish: "kinkku", english: "Ham / ژامبون", example: "Kinkku sopii voileivälle." },
+    { finnish: "juusto", english: "Cheese / پنیر", example: "Juusto on maukasta." },
+    { finnish: "hillo", english: "Jam / مربا", example: "Levitän hilloa leivälle." },
+    { finnish: "jäätelö", english: "Ice Cream / بستنی", example: "Syön jäätelöä kesällä." },
+    { finnish: "karkki", english: "Candy / آبنبات", example: "Syön karkkia harvoin." },
+    { finnish: "kakku", english: "Cake / کیک", example: "Leivon kakun juhliin." },
+    { finnish: "suklaa", english: "Chocolate / شکلات", example: "Rakastan tummaa suklaata." },
+    { finnish: "pulla", english: "Finnish Sweet Bun / نان شیرمال فنلاندی", example: "Pulla tuoksuu herkulliselta." },
+    { finnish: "korvapuusti", english: "Finnish Cinnamon Bun / نان دارچینی فنلاندی", example: "Korvapuusti on perinneherkku." },
+    { finnish: "piirakka", english: "Pie / پای", example: "Teen marjapiirakan viikonloppuna." },
+    { finnish: "keksi", english: "Biscuit / بیسکویت", example: "Syön keksin teen kanssa." },
+    { finnish: "pippuri", english: "Pepper / فلفل", example: "Lisään pippuria kastikkeeseen." },
+    { finnish: "suola", english: "Salt / نمک", example: "Älä laita liikaa suolaa." },
+    { finnish: "sokeri", english: "Sugar / شکر", example: "Tarvitsen sokeria leivontaan." },
+    { finnish: "soija", english: "Soy / سویا", example: "Kokeilen soijarouhetta keitossa." },
+    { finnish: "öljy", english: "Oil / روغن", example: "Paistan pannulla öljyssä." },
+    { finnish: "ketsuppi", english: "Ketchup / سس گوجه‌فرنگی", example: "Laitan ketsuppia hampurilaiseen." },
+    { finnish: "etikka", english: "Vinegar / سرکه", example: "Etikka sopii salaattikastikkeeksi." },
+    { finnish: "sinappi", english: "Mustard / خردل", example: "Syön sinappia makkaran kanssa." },
+    { finnish: "paistinpannu", english: "Frying Pan / تابه", example: "Kuumenna paistinpannu ensin." },
+    { finnish: "kattila", english: "Pot / قابلمه", example: "Keitän vettä kattilassa." },
+    { finnish: "lautanen", english: "Plate / بشقاب", example: "Asetan ruoan lautaselle." },
+    { finnish: "lasi", english: "Glass / لیوان", example: "Kaadan vettä lasiin." },
+    { finnish: "pullo", english: "Bottle / بطری", example: "Minulla on vesipullo mukana." },
+    { finnish: "kannu", english: "Pitcher / پارچ", example: "Kannu on täynnä mehua." },
+    { finnish: "lautasliina", english: "Napkin / دستمال سفره", example: "Käytän lautasliinaa ruokailussa." },
+    { finnish: "haarukka", english: "Fork / چنگال", example: "Otan haarukan laatikosta." },
+    { finnish: "veitsi", english: "Knife / چاقو", example: "Leikkaan leipää veitsellä." },
+    { finnish: "lusikka", english: "Spoon / قاشق", example: "Tarvitsen lusikan keittoon." },
+    { finnish: "kuppi", english: "Cup / فنجان", example: "Juon kahvin kupista." },
+    { finnish: "muki", english: "Mug / لیوان بزرگ", example: "Pidän isosta mukista." },
+    { finnish: "tarjotin", english: "Tray / سینی", example: "Kannoin ruuat tarjottimella." },
+    { finnish: "kulho", english: "Bowl / کاسه", example: "Kulho on täynnä salaattia." },
+    { finnish: "päärynä", english: "Pear / گلابی", example: "Syön päärynän välipalaksi." },
+    { finnish: "omena", english: "Apple / سیب", example: "Omena on terveellinen hedelmä." },
+    { finnish: "banaani", english: "Banana / موز", example: "Banaani on kätevä välipala." },
+    { finnish: "viinirypäle", english: "Grape / انگور", example: "Nämä viinirypäleet ovat makeita." },
+    { finnish: "ananas", english: "Pineapple / آناناس", example: "Tuore ananas maistuu hyvältä." },
+    { finnish: "meloni", english: "Melon / خربزه", example: "Meloni on mehukas kesäherkku." },
+    { finnish: "persikka", english: "Peach / هلو", example: "Persikka on pehmeä hedelmä." },
+    { finnish: "sitruuna", english: "Lemon / لیمو", example: "Sitruuna on hapan." },
+    { finnish: "appelsiini", english: "Orange / پرتقال", example: "Kuorin appelsiinin aamiaiseksi." },
+    { finnish: "luumu", english: "Plum / آلو", example: "Luumu on makea sisältä." },
+    { finnish: "kaali", english: "Cabbage / کلم", example: "Silppuan kaalin salaattiin." },
+    { finnish: "kesäkurpitsa", english: "Zucchini / کدو سبز", example: "Kesäkurpitsa on monikäyttöinen." },
+    { finnish: "kurkku", english: "Cucumber / خیار", example: "Kurkku on raikas lisä salaattiin." },
+    { finnish: "tomaatti", english: "Tomato / گوجه‌فرنگی", example: "Tomaatti on punainen ja mehukas." },
+    { finnish: "herne", english: "Pea / نخود سبز", example: "Kesällä poimin tuoreita herneitä." },
+    { finnish: "kukkakaali", english: "Cauliflower / گل‌کلم", example: "Kukkakaali on maukas uunissa." },
+    { finnish: "porkkana", english: "Carrot / هویج", example: "Porkkana on makea juures." },
+    { finnish: "oliivi", english: "Olive / زیتون", example: "Lisään oliiveja pizzaan." },
+    { finnish: "paprika", english: "Bell Pepper / فلفل دلمه‌ای", example: "Paprika on värikäs vihannes." },
+    { finnish: "maissi", english: "Corn / ذرت", example: "Keitän maissintähkän vedessä." },
+    { finnish: "papu", english: "Bean / لوبیا", example: "Lisään papuja keittoon." },
+    { finnish: "sipuli", english: "Onion / پیاز", example: "Sipuli maustaa ruuan hyvin." },
+    { finnish: "sieni", english: "Mushroom / قارچ", example: "Paistan sieniä pannulla." },
+    { finnish: "valkosipuli", english: "Garlic / سیر", example: "Valkosipuli antaa vahvan maun." }
+],
+    "Time": [
+        { finnish: "maanantai", english: "Monday / دوشنبه", example: "Maanantai on viikon ensimmäinen päivä." },
+        { finnish: "tiistai", english: "Tuesday / سه‌شنبه", example: "Tiistaina käyn kuntosalilla." },
+        { finnish: "keskiviikko", english: "Wednesday / چهارشنبه", example: "Keskiviikkona sataa usein." },
+        { finnish: "torstai", english: "Thursday / پنج‌شنبه", example: "Torstai on melkein viikonloppu." },
+        { finnish: "perjantai", english: "Friday / جمعه", example: "Perjantaina alkaa viikonloppu." },
+        { finnish: "lauantai", english: "Saturday / شنبه", example: "Lauantaina nukun pitkään." },
+        { finnish: "sunnuntai", english: "Sunday / یک‌شنبه", example: "Sunnuntaina lepään kotona." },
+        { finnish: "viikonloppu", english: "Weekend / آخر هفته", example: "Odotan viikonloppua innolla." },
+        { finnish: "arkipäivä", english: "Weekday / روز کاری", example: "Arkipäivinä herään aikaisin." },
+        { finnish: "työpäivä", english: "Workday / روز کاری", example: "Huomenna on pitkä työpäivä." },
+        { finnish: "vapaapäivä", english: "Day Off / روز تعطیل", example: "Minulla on vapaapäivä tänään." },
+        { finnish: "loma", english: "Holiday / تعطیلات", example: "Odotan kesälomaa innolla." },
+        { finnish: "tänään", english: "Today / امروز", example: "Tänään on kaunis päivä." },
+        { finnish: "eilen", english: "Yesterday / دیروز", example: "Eilen satoi vettä." },
+        { finnish: "huomenna", english: "Tomorrow / فردا", example: "Huomenna menen töihin." },
+        { finnish: "toissapäivänä", english: "Day Before Yesterday / پریروز", example: "Toissapäivänä kävin elokuvissa." },
+        { finnish: "ylihuomenna", english: "Day After Tomorrow / پس‌فردا", example: "Ylihuomenna on juhlat." },
+        { finnish: "tammikuu", english: "January / ژانویه", example: "Tammikuu on vuoden kylmin kuukausi." },
+        { finnish: "helmikuu", english: "February / فوریه", example: "Helmikuussa on ystävänpäivä." },
+        { finnish: "maaliskuu", english: "March / مارس", example: "Maaliskuussa kevät alkaa." },
+        { finnish: "huhtikuu", english: "April / آوریل", example: "Huhtikuussa sataa usein." },
+        { finnish: "toukokuu", english: "May / مه", example: "Toukokuussa kukat kukkivat." },
+        { finnish: "kesäkuu", english: "June / ژوئن", example: "Kesäkuu on valoisa kuukausi." },
+        { finnish: "heinäkuu", english: "July / ژوئیه", example: "Heinäkuussa on loma-aika." },
+        { finnish: "elokuu", english: "August / آگوست", example: "Elokuussa koulut alkavat." },
+        { finnish: "syyskuu", english: "September / سپتامبر", example: "Syyskuussa tulee syksy." },
+        { finnish: "lokakuu", english: "October / اکتبر", example: "Lokakuussa on ruska-aika." },
+        { finnish: "marraskuu", english: "November / نوامبر", example: "Marraskuussa sataa usein." },
+        { finnish: "joulukuu", english: "December / دسامبر", example: "Joulukuussa on joulu." },
+        { finnish: "kevät", english: "Spring / بهار", example: "Kevät on kaunis vuodenaika." },
+        { finnish: "kesä", english: "Summer / تابستان", example: "Kesällä on lämmintä." },
+        { finnish: "syksy", english: "Autumn / پاییز", example: "Syksyllä lehdet putoavat." },
+        { finnish: "talvi", english: "Winter / زمستان", example: "Talvella sataa lunta." },
+        { finnish: "aamu", english: "Morning / صبح", example: "Aamulla juon kahvia." },
+        { finnish: "päivä", english: "Day / روز", example: "Päivä on valoisa." },
+        { finnish: "iltapäivä", english: "Afternoon / بعدازظهر", example: "Iltapäivällä menen kauppaan." },
+        { finnish: "ilta", english: "Evening / عصر", example: "Illalla luen kirjaa." },
+        { finnish: "yö", english: "Night / شب", example: "Yöllä on hiljaista." },
+        { finnish: "keskiyö", english: "Midnight / نیمه‌شب", example: "Keskiyöllä kaikki nukkuvat." },
+        { finnish: "aikaisin", english: "Early / زود", example: "Herään aikaisin aamulla." },
+        { finnish: "myöhään", english: "Late / دیر", example: "Menen nukkumaan myöhään." }
+    ],
+  };
+
+
+  /*****************************************
+   * 2) GLOBAL VARIABLES
+   *****************************************/
+  let selectedChapter = null;            // For normal category selection
+  let selectedRandomChapters = ["all"];  // For random mode, which chapters are selected
+  let randomGame = false;               // Are we in random words mode?
+  let reverseMode = false;              // Are we in reverse mode?
+
+  let words = [];         // The shuffled array of words for this quiz
+  let totalWords = 0;     // How many words in the current quiz
+  let currentIndex = 0;   // Which word we’re currently on (0-based)
+  let currentWord = null; // The word object for the current question
+  let autoVoiceEnabled = true;
+  
+  let score = 0;
+  let mistakes = [];
+  let startTime = 0;
+  let timerInterval = null;
+  
+  let useAllWords = true;
+  let selectedWordCount = 150;
+  
+
+  /*****************************************
+   * 10) reset AllGame State
+   *****************************************/
+function resetAllGameState(fullReset = true) {
+  // Reset game configuration
+  selectedChapter = null;
+  selectedRandomChapters = ["all"];
+  randomGame = false;
+  reverseMode = false;
+  autoVoiceEnabled = true;
+
+  // Clear game data
+  words = [];
+  totalWords = 0;
+  currentIndex = 0;
+  currentWord = null;
+  
+  // Reset score and mistakes
+  score = 0;
+  mistakes = [];
+  
+  // Clear timers
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  startTime = 0;
+
+  // Reset all UI elements
+  document.getElementById("score").textContent = "0";
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("timer").textContent = "00:00";
+  document.getElementById("question").innerHTML = "";
+  document.getElementById("options").innerHTML = "";
+  document.getElementById("progressBar").style.width = "0%";
+  document.getElementById("progressText").textContent = "0/0";
+  
+  // Force-clear any remaining word states in chapters
+  for(const chapter in chapters) {
+    chapters[chapter].forEach(word => {
+      delete word.answered;
+      delete word.selectedOption;
+      delete word.wasCorrect;
+      delete word.revealed;
+    });
+  }
+if(fullReset) {  // Only clear mistakes on full reset
+    mistakes = [];
+  }
+}
+
+
+  /*****************************************
+   * 3) HELPER FUNCTIONS
+   *****************************************/
+  function speakWord(text) {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'fi-FI';
+      window.speechSynthesis.speak(utterance);
+    } else {
+      alert("Sorry, your browser doesn't support speech synthesis.");
+    }
+  }
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function disableOptions() {
+    const optionButtons = document.querySelectorAll("#options button");
+    optionButtons.forEach(button => {
+      button.disabled = true;
+    });
+  }
+
+  // For progress bar
+  function updateProgress() {
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    if (totalWords === 0) {
+      progressBar.style.width = '0%';
+      progressText.textContent = '0/0';
+      return;
+    }
+    const answeredCount = currentIndex + 1; // because index is 0-based
+    const percentage = (answeredCount / totalWords) * 100;
+    progressBar.style.width = percentage + '%';
+    progressText.textContent = `${answeredCount}/${totalWords}`;
+  }
+
+  /*****************************************
+   * 4) MODE SELECTION
+   *****************************************/
+  function selectMode(mode) {
+    document.getElementById("modeSelection").classList.add("hidden");
+    reverseMode = false;
+    randomGame = false;
+
+    if (mode === 'category') {
+      document.getElementById("chapterSelection").classList.remove("hidden");
+    } else if (mode === 'wordList') {
+      showWordListPage();
+    } else if (mode === 'reverse') {
+      reverseMode = true;
+      document.getElementById("chapterSelection").classList.remove("hidden");
+    } else if (mode === 'randomWord') {
+      randomGame = true;
+      document.getElementById("randomWordSetupPage").classList.remove("hidden");
+    }
+  }
+
+  /*****************************************
+   * 5) WORD LIST PAGE
+   *****************************************/
+  function showWordListPage() {
+    document.getElementById("modeSelection").classList.add("hidden");
+    document.getElementById("chapterSelection").classList.add("hidden");
+    document.getElementById("wordListPage").classList.remove("hidden");
+    populateWordListCategories();
+  }
+
+  function populateWordListCategories() {
+    const container = document.getElementById("wordListCategories");
+    container.innerHTML = "";
+    for (let category in chapters) {
+      const btn = document.createElement("button");
+      btn.textContent = category;
+      btn.className = "glassy-button";
+      btn.style.width = "100%";
+      btn.style.margin = "10px 0";
+      btn.onclick = function() {
+        showWordListCategory(category);
+      };
+      container.appendChild(btn);
+    }
+  }
+
+  function showWordListCategory(category) {
+    document.getElementById("wordListCategories").classList.add("hidden");
+    document.getElementById("wlBackToModeBtn").style.display = "none";
+    document.getElementById("wordTableContainer").classList.remove("hidden");
+    document.getElementById("wordListTitle").textContent = category;
+    document.getElementById("wordListTagline").style.display = "none";
+
+    const table = document.getElementById("wordTable");
+    table.innerHTML = "";
+
+    const wordsInCategory = chapters[category];
+    wordsInCategory.forEach(word => {
+      const row = document.createElement("tr");
+
+      // Left cell: Finnish + speaker
+      const finnishCell = document.createElement("td");
+      finnishCell.style.padding = "10px";
+      finnishCell.style.borderBottom = "1px solid #555";
+      finnishCell.style.borderRight = "1px solid #555";
+      finnishCell.style.textAlign = "left";
+
+      const speakerSpan = document.createElement("span");
+      speakerSpan.textContent = "🔊 ";
+      speakerSpan.style.cursor = "pointer";
+      speakerSpan.style.marginRight = "5px";
+      speakerSpan.addEventListener("click", function(e) {
+        e.stopPropagation();
+        speakWord(word.finnish);
+      });
+      finnishCell.appendChild(speakerSpan);
+
+      const finnishText = document.createElement("span");
+      finnishText.textContent = word.finnish;
+      finnishCell.appendChild(finnishText);
+
+      // Right cell: English
+      const englishCell = document.createElement("td");
+      englishCell.style.padding = "10px";
+      englishCell.style.borderBottom = "1px solid #555";
+      englishCell.style.textAlign = "right";
+
+      const englishText = document.createElement("span");
+      englishText.textContent = word.english;
+      englishCell.appendChild(englishText);
+
+      row.appendChild(finnishCell);
+      row.appendChild(englishCell);
+      table.appendChild(row);
+
+      // Optional Example Row
+      if (word.example) {
+        const exampleRow = document.createElement("tr");
+        const exampleCell = document.createElement("td");
+        exampleCell.colSpan = 2;
+        exampleCell.style.padding = "10px";
+        exampleCell.style.fontStyle = "italic";
+        exampleCell.style.borderBottom = "1px solid #555";
+        exampleCell.style.textAlign = "center";
+
+        const exampleSpeaker = document.createElement("span");
+        exampleSpeaker.textContent = "🔊 ";
+        exampleSpeaker.style.cursor = "pointer";
+        exampleSpeaker.style.marginRight = "5px";
+        exampleSpeaker.addEventListener("click", function(e) {
+          e.stopPropagation();
+          speakWord(word.example);
+        });
+        exampleCell.appendChild(exampleSpeaker);
+
+        const exampleText = document.createElement("span");
+        exampleText.textContent = word.example;
+        exampleCell.appendChild(exampleText);
+
+        exampleRow.appendChild(exampleCell);
+        table.appendChild(exampleRow);
+      }
+    });
+  }
+
+  function backToWordListCategories() {
+    document.getElementById("wordTableContainer").classList.add("hidden");
+    document.getElementById("wordListCategories").classList.remove("hidden");
+    document.getElementById("wlBackToModeBtn").style.display = "block";
+    document.getElementById("wordListTitle").textContent = "Word List";
+    document.getElementById("wordListTagline").style.display = "block";
+  }
+
+  document.getElementById("backToCategoriesBtnTop").addEventListener("click", backToWordListCategories);
+  document.getElementById("backToCategoriesBtnBottom").addEventListener("click", backToWordListCategories);
+
+  document.getElementById("wlBackToModeBtn").addEventListener("click", function() {
+      resetAllGameState();
+    document.getElementById("wordListPage").classList.add("hidden");
+    document.getElementById("modeSelection").classList.remove("hidden");
+  });
+
+  /*****************************************
+   * 6) CHAPTER SELECTION & GAME START
+   *****************************************/
+function selectChapter(chapterName) {
+  selectedChapter = chapterName;
+  randomGame = false;
+
+  // Get all words from the chapter
+  let allWords = chapters[chapterName].map(word => ({...word}));
+  
+  // If not using all words, take only the first N words
+  if (!useAllWords) {
+    allWords = allWords.slice(0, selectedWordCount);
+  }
+  
+  // Shuffle the selected words
+  words = [...allWords];
+  shuffleArray(words);
+  
+  totalWords = words.length;
+  currentIndex = 0;
+  score = 0;
+  mistakes = [];
+  
+  document.getElementById("chapterSelection").classList.add("hidden");
+  document.getElementById("endScreen").classList.add("hidden");
+  document.getElementById("gameUI").classList.remove("hidden");
+  document.getElementById("bottomNav").classList.remove("hidden");
+  document.getElementById("chapterTitle").textContent = chapterName;
+  document.getElementById("score").textContent = score;
+  
+  initVoiceToggle();
+  startTimer();
+  displayQuestion(currentIndex);
+}
+
+  function backToModeSelection() {
+    resetAllGameState(true);
+    document.getElementById("chapterSelection").classList.add("hidden");
+    document.getElementById("modeSelection").classList.remove("hidden");
+  }
+
+  function goToChapterSelection() {
+    document.getElementById("gameUI").classList.add("hidden");
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("chapterSelection").classList.remove("hidden");
+
+    stopTimer();
+    selectedChapter = null;
+    words = [];
+    mistakes = [];
+    score = 0;
+    currentIndex = 0;
+    totalWords = 0;
+    document.getElementById("score").textContent = 0;
+    document.getElementById("chapterTitle").textContent = "";
+    document.getElementById("feedback").textContent = "";
+    document.getElementById("timer").textContent = "00:00";
+    updateProgress();
+  }
+
+   /*****************************************
+   * 1) initialize the word count controls
+   *****************************************/
+ function initWordCountControls() {
+  const slider = document.getElementById("chapterWordSlider");
+  const numberDisplay = document.getElementById("chapterWordNumber");
+  const selectAllBtn = document.getElementById("selectAllWordsBtn");
+  
+  // Initialize state
+  slider.value = 150;
+  useAllWords = true;
+  selectAllBtn.classList.add("selected");
+  
+  // Update display when slider moves
+  slider.addEventListener("input", function() {
+    const val = parseInt(this.value);
+    selectedWordCount = val;
+    numberDisplay.textContent = val + " words";
+    
+    // Deselect "Select All" button when slider is moved
+    if (useAllWords) {
+      useAllWords = false;
+      selectAllBtn.classList.remove("selected");
+    }
+  });
+
+
+  // Handle Select All button
+  selectAllBtn.addEventListener("click", function() {
+    useAllWords = !useAllWords;
+    this.classList.toggle("selected");
+    
+    if (useAllWords) {
+      slider.value = 150;
+      selectedWordCount = 150;
+      numberDisplay.textContent = "All words";
+    } else {
+      // If deselecting "all", use current slider value
+      const val = parseInt(slider.value);
+      selectedWordCount = val;
+      numberDisplay.textContent = val + " words";
+    }
+  });
+}
+
+  // Call this when the page loads
+  initWordCountControls();
+
+  /*****************************************
+   * 7) RANDOM WORD MODE
+   *****************************************/
+  document.getElementById("randomWordSlider").addEventListener("input", function() {
+    const val = this.value;
+    document.getElementById("randomWordNumber").textContent = val + " words";
+  });
+
+  function populateRandomChapterButtons() {
+    const container = document.getElementById("randomChapterButtons");
+    container.innerHTML = "";
+
+    // Create "All Chapters" button with the requested highlight behavior
+    const allBtn = document.createElement("button");
+    allBtn.textContent = "All Chapters";
+    allBtn.className = "random-chapter-btn";
+    if (selectedRandomChapters.includes("all")) {
+      allBtn.classList.add("selected");
+    }
+
+    allBtn.onclick = function() {
+      if (selectedRandomChapters.includes("all")) {
+        // Deselect "all"
+        selectedRandomChapters = [];
+        allBtn.classList.remove("selected");
+        // Remove highlight from all other buttons
+        Array.from(container.children).forEach(btn => {
+          if (btn !== allBtn) {
+            btn.classList.remove("selected");
+          }
+        });
+      } else {
+        // Select "all"
+        selectedRandomChapters = ["all"];
+        allBtn.classList.add("selected");
+        // Highlight all other chapter buttons
+        Array.from(container.children).forEach(btn => {
+          if (btn !== allBtn) {
+            btn.classList.add("selected");
+          }
+        });
+      }
+    };
+    container.appendChild(allBtn);
+
+    // Individual Chapter Buttons
+    for (let cat in chapters) {
+      const btn = document.createElement("button");
+      btn.textContent = cat;
+      btn.className = "random-chapter-btn";
+
+      // If the user has specifically selected this cat, highlight it
+      if (selectedRandomChapters.includes(cat)) {
+        btn.classList.add("selected");
+      }
+
+      btn.onclick = function() {
+        // If "all" is currently selected, remove it
+        if (selectedRandomChapters.includes("all")) {
+          selectedRandomChapters = [];
+          allBtn.classList.remove("selected");
+          // Also unselect every other button except the one we just clicked
+          Array.from(container.children).forEach(b => {
+            if (b !== allBtn && b !== btn) {
+              b.classList.remove("selected");
+            }
+          });
+        }
+
+        if (selectedRandomChapters.includes(cat)) {
+          // Deselect this category
+          selectedRandomChapters = selectedRandomChapters.filter(c => c !== cat);
+          btn.classList.remove("selected");
+        } else {
+          // Select this category
+          selectedRandomChapters.push(cat);
+          btn.classList.add("selected");
+        }
+      };
+      container.appendChild(btn);
+    }
+  }
+  populateRandomChapterButtons();
+
+  document.getElementById("randomWordStartBtn").addEventListener("click", startRandomWordGame);
+
+  function startRandomWordGame() {
+    randomGame = true;
+    reverseMode = false;
+
+    let numWords = parseInt(document.getElementById("randomWordSlider").value);
+    if (numWords <= 0) {
+      alert("Please choose a number greater than 0.");
+      return;
+    }
+
+    let allWords = [];
+    if (selectedRandomChapters.includes("all")) {
+      // Use all chapters
+      for (let cat in chapters) {
+        allWords = allWords.concat(chapters[cat].map(word => ({...word})));
+      }
+    } else {
+      // Use only selected chapters
+      selectedRandomChapters.forEach(cat => {
+        allWords = allWords.concat(chapters[cat].map(word => ({...word})));
+      });
+    }
+
+    shuffleArray(allWords);
+    words = allWords.slice(0, numWords);
+    totalWords = words.length;
+    currentIndex = 0;
+    score = 0;
+    mistakes = [];
+
+    document.getElementById("randomWordSetupPage").classList.add("hidden");
+    document.getElementById("gameUI").classList.remove("hidden");
+    document.getElementById("bottomNav").classList.remove("hidden");
+    document.getElementById("chapterTitle").textContent = "Random Words";
+    document.getElementById("score").textContent = score;
+    document.getElementById("backToMenuBtn").textContent = "Back to Random Word Challenge";
+    
+    initVoiceToggle();
+    startTimer();
+    displayQuestion(currentIndex);
+  }
+
+  document.getElementById("randomWordBackBtn").addEventListener("click", function() {
+      resetAllGameState();
+    document.getElementById("randomWordSetupPage").classList.add("hidden");
+    document.getElementById("modeSelection").classList.remove("hidden");
+    randomGame = false;
+  });
+
+  /*****************************************
+   * 8) DISPLAY QUESTION (with "locking" old answers)
+   *****************************************/
+function displayQuestion(index) {
+  if (index < 0 || index >= words.length) {
+    endGame();
+    return;
+  }
+
+  currentWord = words[index];
+  document.getElementById("feedback").textContent = "";
+
+  updateProgress();
+
+  // Prepare UI elements
+  const questionDiv = document.getElementById("question");
+  const optionsDiv = document.getElementById("options");
+  questionDiv.innerHTML = "";
+  optionsDiv.innerHTML = "";
+
+  // Decide what text to show (Finnish vs English) in the question
+  if (!reverseMode) {
+    questionDiv.innerHTML =
+      currentWord.finnish +
+      ' <button class="speak-btn" onclick="speakWord(\'' + currentWord.finnish + '\')">🔊</button>';
+    // Only auto-speak if enabled and question is new
+    if (!currentWord.answered && autoVoiceEnabled) {
+      speakWord(currentWord.finnish);
+    }
+  } else {
+    questionDiv.innerHTML = 
+      '<div style="font-family: \'Vazirmatn\'">' + 
+      currentWord.english + 
+      '</div>';
+  }
+
+  const correctAnswer = reverseMode ? currentWord.finnish : currentWord.english;
+
+  // Build 3 distractors
+  const allPossibleWrong = words.filter(w => {
+    return (reverseMode ? w.finnish !== correctAnswer : w.english !== correctAnswer);
+  });
+  shuffleArray(allPossibleWrong);
+  const wrongAnswers = allPossibleWrong.slice(0, 3).map(w => (reverseMode ? w.finnish : w.english));
+
+  // Combine correct + wrong answers
+  const allOptions = [correctAnswer, ...wrongAnswers];
+  shuffleArray(allOptions);
+
+  // Create multiple-choice buttons
+  allOptions.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.textContent = opt;
+    if (!currentWord.answered) {
+      btn.onclick = () => checkAnswer(opt, correctAnswer, btn);
+    }
+    optionsDiv.appendChild(btn);
+  });
+
+  // Show example if available
+  if (currentWord.example) {
+    const accordion = document.createElement("button");
+    accordion.id = "exampleAccordion";
+    accordion.textContent = currentWord.answered ? "Example Sentence:" : "Show Example";
+    accordion.style.backgroundColor = "#1466B8";
+    accordion.style.color = "#fff";
+    accordion.style.border = "none";
+    accordion.style.padding = "8px";
+    accordion.style.margin = "20px 0 0 0";
+    accordion.style.borderRadius = "5px";
+    accordion.style.cursor = "pointer";
+    accordion.style.fontSize = "1.1rem";
+    accordion.style.display = "block";
+    accordion.style.width = "100%";
+    // Only add click handler if question is not answered
+    if (!currentWord.answered) {
+      accordion.addEventListener("click", toggleExample);
+    }
+    optionsDiv.appendChild(accordion);
+
+    const panel = document.createElement("div");
+    panel.id = "examplePanel";
+    panel.style.padding = "10px";
+    panel.style.backgroundColor = "#333";
+    panel.style.display = currentWord.answered ? "block" : "none"; // Auto-show for answered questions
+    panel.style.overflow = "hidden";
+    panel.style.margin = "5px 0 0 0";
+    panel.style.fontSize = "1rem";
+
+    const speakerIcon = document.createElement("span");
+    speakerIcon.textContent = "🔊";
+    speakerIcon.style.cursor = "pointer";
+    speakerIcon.style.marginRight = "5px";
+    speakerIcon.addEventListener("click", function() {
+      speakWord(currentWord.example);
+    });
+    const exampleText = document.createElement("span");
+    exampleText.textContent = currentWord.example;
+    panel.appendChild(speakerIcon);
+    panel.appendChild(exampleText);
+    optionsDiv.appendChild(panel);
+  }
+
+  // "Show Answer" button (only if not answered)
+  if (!currentWord.answered) {
+    const showBtn = document.createElement("button");
+    showBtn.textContent = "Show the Answer";
+    showBtn.style.marginTop = "0";
+    showBtn.style.padding = "8px";
+    showBtn.style.fontSize = "1.1rem";
+    showBtn.style.backgroundColor = "#1466B8";
+    showBtn.style.color = "#fff";
+    showBtn.onclick = () => showAnswer(currentWord, correctAnswer);
+    optionsDiv.appendChild(showBtn);
+  }
+
+  // If the question was already answered or revealed, lock UI and highlight appropriately
+  if (currentWord.answered) {
+    lockAndHighlight(index);
+  }
+}
+
+// Modified toggle function to remember state
+function toggleExample() {
+  const panel = document.getElementById("examplePanel");
+  const accordion = document.getElementById("exampleAccordion");
+  if (!panel || !accordion) return;
+
+  if (panel.style.display === "block") {
+    panel.style.display = "none";
+    accordion.textContent = "Show Example";
+    currentWord.exampleShown = false;
+  } else {
+    panel.style.display = "block";
+    accordion.textContent = "Hide Example";
+    currentWord.exampleShown = true;
+    speakWord(currentWord.example);
+  }
+}
+
+  /*****************************************
+   * 9) ANSWERING & LOCKING
+   *****************************************/
+  function checkAnswer(selected, correct, btn) {
+    const feedbackDiv = document.getElementById("feedback");
+
+    // Mark this question as answered
+    currentWord.answered = true;
+    currentWord.selectedOption = selected;
+    currentWord.wasCorrect = (selected === correct);
+    currentWord.revealed = false; // not revealed by "Show Answer"
+
+    if (selected === correct) {
+      score += 10;
+      feedbackDiv.textContent = "🎉 Correct! +10 points";
+    } else {
+      score -= 3;
+      feedbackDiv.textContent = "❌ Wrong! -3 points";
+      addMistake(currentWord, "wrong");
+    }
+    document.getElementById("score").textContent = score;
+
+    disableOptions();
+    highlightCorrectButton(correct);
+
+    // If user was wrong, we can allow them to see next question soon
+    // or they can press Next themselves. 
+    // Let's auto-delay:
+    setTimeout(() => {
+      feedbackDiv.textContent = "";
+      nextWord();
+    }, selected === correct ? 1500 : 2500);
+  }
+
+  function showAnswer(word, correctAnswer) {
+    word.answered = true;
+    word.selectedOption = null;
+    word.wasCorrect = false;
+    word.revealed = true;
+    score -= 5;
+    document.getElementById("score").textContent = score;
+
+    addMistake(word, "shown");
+    disableOptions();
+    highlightCorrectButton(correctAnswer);
+
+    setTimeout(() => {
+      document.getElementById("feedback").textContent = "";
+      nextWord();
+    }, 3000);
+  }
+
+  // Lock & highlight a previously answered question (when you go back to it)
+  function lockAndHighlight(index) {
+    disableOptions();
+
+    const correctAnswer = reverseMode
+      ? words[index].finnish
+      : words[index].english;
+
+    highlightCorrectButton(correctAnswer);
+
+    // If user selected a wrong option, highlight it in red
+    if (words[index].selectedOption && !words[index].wasCorrect) {
+      const optionButtons = document.querySelectorAll("#options button");
+      optionButtons.forEach(b => {
+        if (b.textContent === words[index].selectedOption) {
+          b.style.backgroundColor = "darkred";
+          b.style.color = "#fff";
+        }
+      });
+    }
+  }
+
+  function highlightCorrectButton(correctAnswer) {
+    const optionButtons = document.querySelectorAll("#options button");
+    optionButtons.forEach(b => {
+      if (b.textContent === correctAnswer) {
+        b.style.backgroundColor = "#1466B8";
+        b.style.color = "#fff";
+      }
+    });
+  }
+
+  function addMistake(wordObj, reasonType) {
+    // Avoid duplicates
+    if (!mistakes.find(m => m.finnish === wordObj.finnish && m.english === wordObj.english)) {
+      mistakes.push({
+        finnish: wordObj.finnish,
+        english: wordObj.english,
+        example: wordObj.example || "",
+        reason: reasonType
+      });
+    }
+  }
+
+  function nextWord() {
+    currentIndex++;
+    if (currentIndex >= totalWords) {
+      endGame();
+    } else {
+      displayQuestion(currentIndex);
+    }
+  }
+
+
+  /*****************************************
+   * 10) PREVIOUS & NEXT BUTTONS
+   *****************************************/
+  document.getElementById("prevBtn").addEventListener("click", function() {
+    if (currentIndex > 0) {
+      currentIndex--;
+      displayQuestion(currentIndex);
+    }
+  });
+
+  document.getElementById("nextBtn").addEventListener("click", function() {
+    if (currentIndex < totalWords - 1) {
+      currentIndex++;
+      displayQuestion(currentIndex);
+    }
+  });
+
+  /*****************************************
+   * 11) END GAME
+   *****************************************/
+function endGame() {
+  document.getElementById("gameUI").classList.add("hidden");
+  document.getElementById("endScreen").classList.remove("hidden");
+
+  document.getElementById("finalScore").textContent = score;
+  document.getElementById("finalTime").textContent = document.getElementById("timer").textContent;
+  stopTimer();
+
+  const mistakesDiv = document.getElementById("mistakesList");
+  const reviewBtn = document.getElementById("reviewMissedBtn").addEventListener("click", reviewMissedWords);
+  const toggleBtn = document.getElementById("toggleMissedBtn");
+
+  if (mistakes.length === 0) {
+    mistakesDiv.innerHTML = "<p>No mistakes or revealed answers! Great job.</p>";
+    reviewBtn.classList.add("hidden");
+    toggleBtn.classList.add("hidden");
+  } else {
+    mistakesDiv.classList.add("hidden");
+    let output = "<h3>Words you missed or revealed:</h3>";
+    mistakes.forEach(item => {
+      output += `${item.finnish} = ${item.english} (${item.reason})<br>`;
+    });
+    mistakesDiv.innerHTML = output;
+    reviewBtn.classList.remove("hidden");
+    toggleBtn.classList.remove("hidden");
+    toggleBtn.textContent = "Show the Words I Missed";
+  }
+
+  const endBtn = document.getElementById("backToChaptersEnd");
+  if (randomGame) {
+    endBtn.textContent = "Back to Random Word Challenge";
+    resetAllGameState();
+  } else {
+    endBtn.textContent = "Back to Chapters";
+    resetAllGameState();
+  } // Add this closing bracket
+} // This was missing
+  /*****************************************
+   * 12) REVIEW MISSED WORDS
+   *****************************************/
+function reviewMissedWords() {
+  if (mistakes.length === 0) return;
+
+  // Clone the mistakes array and shuffle it for review
+  const reviewWords = [...mistakes];
+  shuffleArray(reviewWords);
+
+  // Reset game state but preserve mistakes
+  resetAllGameState(false);  // Pass false to keep mistakes array
+
+  // Set up the game with missed words
+  words = reviewWords.map(m => ({
+    finnish: m.finnish,
+    english: m.english,
+    example: m.example || "",  // Ensure example exists
+    answered: false,  // Reset the answered state
+    wasCorrect: false,  // Reset the correct state
+    revealed: false  // Reset the revealed state
+  }));
+
+  // Update game state
+  totalWords = words.length;
+  currentIndex = 0;
+  score = 0;
+  
+  // Update UI
+  document.getElementById("score").textContent = score;
+  document.getElementById("endScreen").classList.add("hidden");
+  document.getElementById("gameUI").classList.remove("hidden");
+  document.getElementById("bottomNav").classList.remove("hidden");
+  document.getElementById("chapterTitle").textContent = "Review Missed Words";
+  
+  // Initialize voice toggle and timer
+  initVoiceToggle();
+  startTimer();
+  
+  // Show first question
+  displayQuestion(currentIndex);
+}
+  
+  function toggleMissedWords() {
+    const mistakesDiv = document.getElementById("mistakesList");
+    const toggleBtn = document.getElementById("toggleMissedBtn");
+    if (mistakesDiv.classList.contains("hidden")) {
+      mistakesDiv.classList.remove("hidden");
+      toggleBtn.textContent = "Hide the Words I Missed";
+    } else {
+      mistakesDiv.classList.add("hidden");
+      toggleBtn.textContent = "Show the Words I Missed";
+    }
+  }
+
+  /*****************************************
+   * 13) TIMER
+   *****************************************/
+  function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+  }
+
+  function updateTimer() {
+    const elapsedMs = Date.now() - startTime;
+    const totalSeconds = Math.floor(elapsedMs / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const formatted = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    document.getElementById('timer').textContent = formatted;
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  
+    /*****************************************
+   * 14) init Voice Toggle
+   *****************************************/
+function initVoiceToggle() {
+  const toggle = document.getElementById('voiceToggle');
+  toggle.classList.toggle('active', autoVoiceEnabled);
+  
+  toggle.onclick = function() {
+    autoVoiceEnabled = !autoVoiceEnabled;
+    toggle.classList.toggle('active');
+  };
+}
+  /*****************************************
+   * 14) BACK BUTTONS (Menu, etc.)
+   *****************************************/
+  document.getElementById("backToMenuBtn").addEventListener("click", function() {
+    stopTimer();
+
+    if (randomGame) {
+      document.getElementById("gameUI").classList.add("hidden");
+      document.getElementById("randomWordSetupPage").classList.remove("hidden");
+      resetAllGameState();
+    } else if (reverseMode) {
+      // Handle reverse mode back to mode selection
+      resetAllGameState();
+      document.getElementById("gameUI").classList.add("hidden");
+      document.getElementById("modeSelection").classList.remove("hidden");
+      reverseMode = false; // Reset the mode
+    } else {
+      goToChapterSelection();
+      resetAllGameState();
+    }
+  });
+
+  document.getElementById("backToChaptersEnd").addEventListener("click", function () {
+      resetAllGameState();
+    document.getElementById("endScreen").classList.add("hidden");
+    stopTimer();
+    if (randomGame) {
+      document.getElementById("randomWordSetupPage").classList.remove("hidden");
+      randomGame = false;
+      resetAllGameState();
+    } else {
+      document.getElementById("chapterSelection").classList.remove("hidden");
+      resetAllGameState();
+    }
+  });
+  
+</script>
+
+
+</body>
+</html>
